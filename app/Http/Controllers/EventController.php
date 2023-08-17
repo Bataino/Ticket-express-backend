@@ -17,10 +17,10 @@ class EventController extends Controller
      */
     public function index()
     {
-        if(auth()->user()->role != 'super-admin') {
-            return $this->sendError([],"Unauthenticated", 401);
+        if (auth()->user()->role != 'super-admin') {
+            return $this->sendError([], "Unauthenticated", 401);
         }
-        return $this->sendResponse(Event::where('id', '!=', null)->orderBy('created_at', 'DESC')->get(),""); //
+        return $this->sendResponse(Event::where('id', '!=', null)->orderBy('created_at', 'DESC')->get(), ""); //
     }
 
     function csvToArray($filename = '', $delimiter = ',')
@@ -43,13 +43,14 @@ class EventController extends Controller
         return $data;
     }
 
-    function getValueFromHint(Array $arr, String $hint){
+    function getValueFromHint(array $arr, String $hint)
+    {
         $k = '';
-        $newArr = array_filter($arr, function($key) use ($hint, &$k) {
+        $newArr = array_filter($arr, function ($key) use ($hint, &$k) {
             // $key = str_replace(" ","",$key);
             // $k = $key;
             return str_contains(strtolower($key), $hint);
-        }, ARRAY_FILTER_USE_KEY );
+        }, ARRAY_FILTER_USE_KEY);
 
         return array_values($newArr)[0];
     }
@@ -61,8 +62,8 @@ class EventController extends Controller
      */
     public function create(Request $request)
     {
-        if(auth()->user()->role != 'super-admin') {
-            return $this->sendError([],"Unauthenticated", 401);
+        if (auth()->user()->role != 'super-admin') {
+            return $this->sendError([], "Unauthenticated", 401);
         }
         $validator = Validator::make($request->all(), [
             'file' => 'mimes:csv|required',
@@ -71,7 +72,7 @@ class EventController extends Controller
             'password' => 'string|required|min:6'
         ]);
 
-       
+
         if ($validator->fails()) {
             return $this->sendError('Validation Error.', $validator->errors());
         }
@@ -94,7 +95,7 @@ class EventController extends Controller
 
                 // return  $this->sendResponse($this->getValueFromHint($ticket, "first"),"");
                 $id = $this->getValueFromHint($ticket, "id");
-                $newTicket = Ticket::firstOrNew([ 'id' => $id ]) ;
+                $newTicket = Ticket::firstOrNew(['id' => $id]);
                 // $newTicket = new Ticket();
                 // $newTicket->id = $id;
                 // return [$newTicket->id, $id];
@@ -127,7 +128,6 @@ class EventController extends Controller
      */
     public function store(Request $request)
     {
-        //
     }
 
     /**
@@ -138,7 +138,22 @@ class EventController extends Controller
      */
     public function show($id)
     {
-        //
+        if (auth()->user()->role == 'super-admin') {
+            $event = Event::find($id);
+            $event->users = User::where('event_id', $event->id)->count();
+            if ($event)
+                return $this->sendResponse($event, "Event details");
+            else
+                return $this->sendError(null, "Event not Found", 404);
+        } 
+        else if (auth()->user()->role == 'admin') {
+            $event = Event::where('id', auth()->user()->event_id)->first();
+            $event->users = User::where('event_id', $event->id)->count();
+            return $this->sendResponse($event, "Event details");
+        }
+        else
+            return $this->sendError([], "Unauthenticated", 401);
+         // //
     }
 
     /**

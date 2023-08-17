@@ -24,10 +24,29 @@ class UserController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function create()
+    public function create(Request $request)
     {
-        //
+        if(auth()->user()->role != 'super-admin') {
+            return $this->sendError([],"Unauthenticated", 401);
+        }
+        $validator = Validator::make($request->all(), [
+            'email' => 'required|string|unique:users,email',
+            'password' => 'required|min:6',
+            'event_id' => 'required|integer',
+        ]);
+
+        if($validator->fails()){
+            return $this->sendError('Validation Error.', $validator->errors());       
+        }
+   
+        $input = $request->all();
+        $input['password'] = bcrypt($input['password']);
+        $input['role'] = 'admin';
+        $user = User::create($input);
+   
+        return $this->sendResponse($user, 'User register successfully');
     }
+        //
 
     /**
      * Store a newly created resource in storage.

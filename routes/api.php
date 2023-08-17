@@ -19,11 +19,13 @@ use Illuminate\Support\Facades\Route;
 
 
 Route::get('ticket/{id}', [TicketController::class, 'show']);
-Route::post('login', [UserController::class,'store']);
-Route::post('register', [UserController::class,'register']);
+Route::post('login', [UserController::class, 'store']);
+Route::post('register', [UserController::class, 'register']);
 
-Route::middleware('auth:sanctum')->group( function () {
+Route::middleware('auth:sanctum')->group(function () {
+    Route::post('user', [UserController::class, 'create']);
     Route::post('event', [EventController::class, 'create']);
     Route::get('event', [EventController::class, 'index']);
-    Route::get('ticket', [TicketController::class,'index']);
+    Route::get('event/{id}', [EventController::class, 'show']);
+    Route::get('ticket', [TicketController::class, 'index']);
 });
