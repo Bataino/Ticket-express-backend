@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Event;
 use App\Models\Ticket;
 use App\Models\User;
+use Exception;
 use Illuminate\Http\Request;
 use Validator;
 
@@ -52,7 +53,10 @@ class EventController extends Controller
             return str_contains(strtolower($key), $hint);
         }, ARRAY_FILTER_USE_KEY);
 
-        return array_values($newArr)[0];
+        if (count($newArr) > 0)
+            return array_values($newArr)[0];
+
+        return null;
     }
 
     /**
@@ -80,44 +84,48 @@ class EventController extends Controller
         $event = Event::create([
             'name' => $request->input('name')
         ]);
-        $user = User::create([
-            'email' => $request->input('username'),
-            'password' => bcrypt($request->input('password')),
-            'role' => 'admin',
-            'event_id' => $event->id
-        ]);
+
+
 
         if ($file = $request->file('file')) {
-            $path = $file->move('public/files/images/orders');
+            $path = $file->move('public/files/csv');
             $tickets = $this->csvToArray(public_path($path->getPathname()));
 
             foreach ($tickets as $ticket) {
+                try {
 
-                // return  $this->sendResponse($this->getValueFromHint($ticket, "first"),"");
-                $id = $this->getValueFromHint($ticket, "id");
-                $newTicket = Ticket::firstOrNew(['id' => $id]);
-                // $newTicket = new Ticket();
-                // $newTicket->id = $id;
-                // return [$newTicket->id, $id];
-                $newTicket->type = $this->getValueFromHint($ticket, "type");
-                $newTicket->level = $this->getValueFromHint($ticket, "level");
-                $newTicket->price = $this->getValueFromHint($ticket, "price");
-                $newTicket->page_name = $this->getValueFromHint($ticket, "page");
-                $newTicket->first_name = $this->getValueFromHint($ticket, "first");
-                $newTicket->last_name = $this->getValueFromHint($ticket, "last");
-                $newTicket->email = $this->getValueFromHint($ticket, "mail");
-                $newTicket->phone = $this->getValueFromHint($ticket, "number");
-                $newTicket->event_id = $event->id;
-                $newTicket->save();
+                    // return  $this->sendResponse($this->getValueFromHint($ticket, "first"),"");
+                    $id = $this->getValueFromHint($ticket, "id");
+                    $newTicket = Ticket::firstOrNew(['id' => $id]);
+                    // $newTicket = new Ticket();
+                    // $newTicket->id = $id;
+                    // return [$newTicket->id, $id];
+                    $newTicket->type = $this->getValueFromHint($ticket, "type");
+                    $newTicket->level = $this->getValueFromHint($ticket, "level");
+                    $newTicket->price = $this->getValueFromHint($ticket, "price");
+                    $newTicket->page_name = $this->getValueFromHint($ticket, "page");
+                    $newTicket->first_name = $this->getValueFromHint($ticket, "first");
+                    $newTicket->last_name = $this->getValueFromHint($ticket, "last");
+                    $newTicket->email = $this->getValueFromHint($ticket, "mail");
+                    $newTicket->phone = $this->getValueFromHint($ticket, "number");
+                    $newTicket->payment = $this->getValueFromHint($ticket, "payment");
+                    $newTicket->event_id = $event->id;
+                    $newTicket->save();
+                } catch (Exception $e) {
+                    $event->delete();
+                    $this->sendError('Could not parse csv file', $e);
+                }
             }
 
-            // $image_name = $file->getClientOriginalName();
-
-            // print_r(url('').$path->getPathname());
+            User::create([
+                'email' => $request->input('username'),
+                'password' => bcrypt($request->input('password')),
+                'role' => 'admin',
+                'event_id' => $event->id
+            ]);
+            return $this->sendResponse(['user' => $request->user()], "Ticket created Successfully");
+            //
         }
-        //    return $this->sendResponse(["request"],"");
-        return $this->sendResponse(['user' => $request->user()], "Ticket created Successfully");
-        //
     }
 
     /**
@@ -145,15 +153,13 @@ class EventController extends Controller
                 return $this->sendResponse($event, "Event details");
             else
                 return $this->sendError(null, "Event not Found", 404);
-        } 
-        else if (auth()->user()->role == 'admin') {
+        } else if (auth()->user()->role == 'admin') {
             $event = Event::where('id', auth()->user()->event_id)->first();
             $event->users = User::where('event_id', $event->id)->count();
             return $this->sendResponse($event, "Event details");
-        }
-        else
+        } else
             return $this->sendError([], "Unauthenticated", 401);
-         // //
+        // //
     }
 
     /**

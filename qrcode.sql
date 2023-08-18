@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Aug 15, 2023 at 01:13 PM
+-- Generation Time: Aug 18, 2023 at 09:22 AM
 -- Server version: 10.4.28-MariaDB
 -- PHP Version: 8.0.28
 
@@ -39,24 +39,7 @@ CREATE TABLE `events` (
 --
 
 INSERT INTO `events` (`id`, `name`, `created_at`, `updated_at`) VALUES
-(1, 'ODS', '2023-07-30 12:46:28', '2023-07-30 12:46:28'),
-(2, 'ODS', '2023-07-30 12:50:30', '2023-07-30 12:50:30'),
-(3, 'ODS', '2023-07-30 12:51:12', '2023-07-30 12:51:12'),
-(4, 'ODS', '2023-07-30 12:52:05', '2023-07-30 12:52:05'),
-(5, 'ODS', '2023-07-30 12:53:13', '2023-07-30 12:53:13'),
-(6, 'ODS', '2023-07-30 12:53:16', '2023-07-30 12:53:16'),
-(7, 'ODS', '2023-07-30 12:54:43', '2023-07-30 12:54:43'),
-(8, 'ODS', '2023-07-30 12:55:47', '2023-07-30 12:55:47'),
-(9, 'ODS', '2023-07-30 13:01:29', '2023-07-30 13:01:29'),
-(10, 'ODS', '2023-07-30 13:02:08', '2023-07-30 13:02:08'),
-(11, 'res', '2023-08-11 06:57:42', '2023-08-11 06:57:42'),
-(12, 'res', '2023-08-11 06:59:07', '2023-08-11 06:59:07'),
-(13, 'res', '2023-08-11 06:59:41', '2023-08-11 06:59:41'),
-(14, 'Hello', '2023-08-11 13:13:12', '2023-08-11 13:13:12'),
-(15, 'Hello', '2023-08-11 13:23:24', '2023-08-11 13:23:24'),
-(16, 'Hello', '2023-08-11 13:23:52', '2023-08-11 13:23:52'),
-(17, 'Ses', '2023-08-11 13:29:40', '2023-08-11 13:29:40'),
-(18, 'Akarui', '2023-08-11 13:56:29', '2023-08-11 13:56:29');
+(23, 'Test Event', '2023-08-18 06:20:11', '2023-08-18 06:20:11');
 
 -- --------------------------------------------------------
 
@@ -98,7 +81,8 @@ INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES
 (10, '2023_07_30_063322_create_tickets_table', 1),
 (25, '2023_07_30_072356_create_events_table', 2),
 (26, '2023_07_30_094847_add_event_to_tickets', 2),
-(28, '2023_08_11_115119_add_event_id_to_users', 3);
+(28, '2023_08_11_115119_add_event_id_to_users', 3),
+(29, '2023_08_18_063715_add_payment_to_tickets', 4);
 
 -- --------------------------------------------------------
 
@@ -161,7 +145,13 @@ INSERT INTO `personal_access_tokens` (`id`, `tokenable_type`, `tokenable_id`, `n
 (23, 'App\\Models\\User', 1, 'login', 'd5e817f61b0e5677c8ca571a0d2f2c93c06eefbd772ff2e7a3fb229fa01a7fa8', '[\"*\"]', '2023-08-11 13:29:43', NULL, '2023-08-11 13:29:09', '2023-08-11 13:29:43'),
 (24, 'App\\Models\\User', 4, 'login', 'a4f73148c87bd9ed004c62929dabadfff773f811f75d12c20b55b5dd5d19da4c', '[\"*\"]', '2023-08-11 13:51:53', NULL, '2023-08-11 13:30:56', '2023-08-11 13:51:53'),
 (25, 'App\\Models\\User', 1, 'login', 'bb26156bf689f2d5f015bf2818462e501b6c5d4563db6dbbec467f517cfc4c19', '[\"*\"]', '2023-08-11 13:56:30', NULL, '2023-08-11 13:56:09', '2023-08-11 13:56:30'),
-(26, 'App\\Models\\User', 5, 'login', '73722494409cdc3f548937618a380294d6e3083668f9d0c584b3a668ac3103ec', '[\"*\"]', '2023-08-11 13:58:07', NULL, '2023-08-11 13:58:06', '2023-08-11 13:58:07');
+(26, 'App\\Models\\User', 5, 'login', '73722494409cdc3f548937618a380294d6e3083668f9d0c584b3a668ac3103ec', '[\"*\"]', '2023-08-11 13:58:07', NULL, '2023-08-11 13:58:06', '2023-08-11 13:58:07'),
+(27, 'App\\Models\\User', 1, 'login', '0b3fea0ab6c0ddfd4e00d024ab95e55a0033db62e494e1f857c68204d4f6f645', '[\"*\"]', '2023-08-17 06:45:35', NULL, '2023-08-16 10:55:28', '2023-08-17 06:45:35'),
+(28, 'App\\Models\\User', 4, 'login', 'edd6773851431ebe47d1295618055e1379317e3235862ee2b5f3b537d57658f0', '[\"*\"]', '2023-08-17 07:03:38', NULL, '2023-08-17 07:01:52', '2023-08-17 07:03:38'),
+(29, 'App\\Models\\User', 4, 'login', '971ed5ff56a2e880d246217cbc6eff7c0c85411dc756a4412ea673cf2565b7bd', '[\"*\"]', '2023-08-17 12:56:03', NULL, '2023-08-17 09:02:21', '2023-08-17 12:56:03'),
+(30, 'App\\Models\\User', 1, 'login', '54e5f5e57022acbc75a3e0dfe2b3f53b2d33590178336dc8716e36079c224ad6', '[\"*\"]', '2023-08-18 05:20:07', NULL, '2023-08-17 13:03:17', '2023-08-18 05:20:07'),
+(31, 'App\\Models\\User', 1, 'login', '6893f669e81ec80cbc05fd0ac8c6ae185931d12fa20abc35ac5c60753838147c', '[\"*\"]', '2023-08-18 06:20:12', NULL, '2023-08-18 05:22:44', '2023-08-18 06:20:12'),
+(32, 'App\\Models\\User', 13, 'login', 'ccffae96175ab02dad9d2d5e8ca647737d904276b5bc15b7df8cd77ca05daffa', '[\"*\"]', NULL, NULL, '2023-08-18 06:21:38', '2023-08-18 06:21:38');
 
 -- --------------------------------------------------------
 
@@ -171,33 +161,114 @@ INSERT INTO `personal_access_tokens` (`id`, `tokenable_type`, `tokenable_id`, `n
 
 CREATE TABLE `tickets` (
   `id` varchar(255) NOT NULL,
-  `type` varchar(255) NOT NULL,
-  `level` varchar(255) NOT NULL,
-  `price` double(8,2) NOT NULL,
-  `page_name` varchar(255) NOT NULL,
-  `first_name` varchar(255) NOT NULL,
-  `last_name` varchar(255) NOT NULL,
-  `phone` varchar(255) NOT NULL,
-  `email` varchar(255) NOT NULL,
+  `type` varchar(255) DEFAULT NULL,
+  `level` varchar(255) DEFAULT NULL,
+  `price` double DEFAULT NULL,
+  `page_name` varchar(255) DEFAULT NULL,
+  `first_name` varchar(255) DEFAULT NULL,
+  `last_name` varchar(255) DEFAULT NULL,
+  `phone` varchar(255) DEFAULT NULL,
+  `email` varchar(255) DEFAULT NULL,
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL,
   `is_scanned` tinyint(1) NOT NULL DEFAULT 0,
-  `event_id` bigint(20) UNSIGNED DEFAULT NULL
+  `event_id` bigint(20) UNSIGNED DEFAULT NULL,
+  `payment` varchar(255) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
 -- Dumping data for table `tickets`
 --
 
-INSERT INTO `tickets` (`id`, `type`, `level`, `price`, `page_name`, `first_name`, `last_name`, `phone`, `email`, `created_at`, `updated_at`, `is_scanned`, `event_id`) VALUES
-('01H44RW5PET701BV5QH', 'standard', 'General Admission', 1.00, 'July 4th Weekend', 'Fred', 'Cobar', '18187202605', 'mona@ladigitalstudio.com', '2023-07-30 13:02:08', '2023-08-11 13:56:29', 1, 18),
-('01H44TDREWYGC6WMZ6B', 'standard', 'General Admission', 22.50, 'July 4th Weekend', 'Mona', 'Velcu', '18187202605', 'mona@ladigitalstudio.com', '2023-07-30 13:02:08', '2023-08-11 13:56:29', 0, 18),
-('01H44WXXRJW6XB34GQE', 'standard', 'General Admission', 22.50, 'July 4th Weekend', 'Freddy', 'Nunez', '13233530674', 'promocionesfreddy@yahoo.com', '2023-07-30 13:02:08', '2023-08-11 13:56:29', 1, 18),
-('01H49S7X84WA22ZHK2N', 'standard', 'General Admission', 20.00, 'July 4th Weekend', 'Test', 'Test1', '18187202605', 'mona@ladigitalstudio.com', '2023-07-30 13:02:08', '2023-08-11 13:56:29', 0, 18),
-('01H49SCR84PK59KPQDT', 'standard', 'General Admission', 20.00, 'July 4th Weekend', 'Test', 'Test', '18187202605', 'mona@ladigitalstudio.com', '2023-07-30 13:02:08', '2023-08-11 13:56:29', 0, 18),
-('01H49TPZAEZW3EFK9YD', 'standard', 'General Admission', 20.00, 'July 4th Weekend', 'Test', 'Test', '18187202605', 'mona@ladigitalstudio.com', '2023-08-11 06:57:42', '2023-08-11 13:56:29', 0, 18),
-('01H49TWGNB7HTV9BGPW', 'standard', 'General Admission', 20.00, 'July 4th Weekend', 'Test', 'Test', '18187202605', 'ladigitalstudio@gmail.com', '2023-07-30 13:02:08', '2023-08-11 13:56:29', 0, 18),
-('01H6AYDJHVQQP22QKWM', 'standard', 'General Admission', 20.00, 'July 4th Weekend', 'Test', 'Test', '18187202605', 'mona@ladigitalstudio.com', '2023-07-30 13:02:08', '2023-08-11 10:14:36', 1, 10);
+INSERT INTO `tickets` (`id`, `type`, `level`, `price`, `page_name`, `first_name`, `last_name`, `phone`, `email`, `created_at`, `updated_at`, `is_scanned`, `event_id`, `payment`) VALUES
+('01H4YWG2FFZTS2K7MS8', NULL, NULL, NULL, NULL, 'Claudia', 'Sanchez', '16262674004', 'oompa1234@yahoo.com', '2023-08-18 06:20:11', '2023-08-18 06:20:11', 0, 23, 'VISA-8528'),
+('01H4YWG2FG4APSTV610', NULL, NULL, NULL, NULL, 'Claudia', 'Sanchez', '16262674004', 'oompa1234@yahoo.com', '2023-08-18 06:20:11', '2023-08-18 06:20:11', 0, 23, 'VISA-8528'),
+('01H4YWG2FH61A0HHCM8', NULL, NULL, NULL, NULL, 'Claudia', 'Sanchez', '16262674004', 'oompa1234@yahoo.com', '2023-08-18 06:20:11', '2023-08-18 06:20:11', 0, 23, 'VISA-8528'),
+('01H58TRN6ADVMYGK2QB', NULL, NULL, NULL, NULL, 'Jazmin', 'Gutierrez', '17472497365', 'jazmingtrz98@gmail.com', '2023-08-18 06:20:11', '2023-08-18 06:20:11', 0, 23, 'VISA-7929'),
+('01H58TRN6BCXRG6XKM9', NULL, NULL, NULL, NULL, 'Jazmin', 'Gutierrez', '17472497365', 'jazmingtrz98@gmail.com', '2023-08-18 06:20:11', '2023-08-18 06:20:11', 0, 23, 'VISA-7929'),
+('01H58TRN6BF1K6A2R9C', NULL, NULL, NULL, NULL, 'Jazmin', 'Gutierrez', '17472497365', 'jazmingtrz98@gmail.com', '2023-08-18 06:20:11', '2023-08-18 06:20:11', 0, 23, 'VISA-7929'),
+('01H5DTJ8F9YK3N3YZ9K', NULL, NULL, NULL, NULL, 'Eva', 'Munoz', '16262162283', 'munozeva@rocketmail.com', '2023-08-18 06:20:11', '2023-08-18 06:20:11', 0, 23, 'VISA-8687'),
+('01H5DTJ8FA64KWBTG2T', NULL, NULL, NULL, NULL, 'Eva', 'Munoz', '16262162283', 'munozeva@rocketmail.com', '2023-08-18 06:20:11', '2023-08-18 06:20:11', 0, 23, 'VISA-8687'),
+('01H5E4K7T9F3HQC0F75', NULL, NULL, NULL, NULL, 'Marco', 'De La Cruz', '13237060327', 'marcodlc41@gmail.con', '2023-08-18 06:20:11', '2023-08-18 06:20:11', 0, 23, 'VISA-0367'),
+('01H5E4K7TAHNENE4NCR', NULL, NULL, NULL, NULL, 'Marco', 'De La Cruz', '13237060327', 'marcodlc41@gmail.con', '2023-08-18 06:20:11', '2023-08-18 06:20:11', 0, 23, 'VISA-0367'),
+('01H5GSSGMY364V6CKZN', NULL, NULL, NULL, NULL, 'Cristina', 'Morales', '15628849634', 'moralescristina562@gmail.com', '2023-08-18 06:20:11', '2023-08-18 06:20:11', 0, 23, 'VISA-4755'),
+('01H5GSSGMZ9G6X3GSVV', NULL, NULL, NULL, NULL, 'Cristina', 'Morales', '15628849634', 'moralescristina562@gmail.com', '2023-08-18 06:20:11', '2023-08-18 06:20:11', 0, 23, 'VISA-4755'),
+('01H5N7RGBRTQWGWBQY0', NULL, NULL, NULL, NULL, 'Guadalupe', 'Pacheco', '13233856030', 'guadalupepacheco912@gmail.com', '2023-08-18 06:20:11', '2023-08-18 06:20:11', 0, 23, 'VISA-8995'),
+('01H5N7RGBSHAQG08BD0', NULL, NULL, NULL, NULL, 'Guadalupe', 'Pacheco', '13233856030', 'guadalupepacheco912@gmail.com', '2023-08-18 06:20:11', '2023-08-18 06:20:11', 0, 23, 'VISA-8995'),
+('01H5QCXR4F0XDN5J9AK', NULL, NULL, NULL, NULL, 'Blanca', 'Castro Flores', '15622351422', 'bpacheco31648@gmail.com', '2023-08-18 06:20:11', '2023-08-18 06:20:11', 0, 23, 'MAST-4141'),
+('01H5QCXR4GM85RSTGKV', NULL, NULL, NULL, NULL, 'Blanca', 'Castro Flores', '15622351422', 'bpacheco31648@gmail.com', '2023-08-18 06:20:11', '2023-08-18 06:20:11', 0, 23, 'MAST-4141'),
+('01H5QNW1VN7S99D4EAX', NULL, NULL, NULL, NULL, 'Anayeli', 'Cruz', '17148042802', 'acruz4343@gmail.com', '2023-08-18 06:20:11', '2023-08-18 06:20:11', 0, 23, 'VISA-9361'),
+('01H5QNW1VQPHMPST5YE', NULL, NULL, NULL, NULL, 'Anayeli', 'Cruz', '17148042802', 'acruz4343@gmail.com', '2023-08-18 06:20:11', '2023-08-18 06:20:11', 0, 23, 'VISA-9361'),
+('01H5RGSFAYXQ3AB46YY', NULL, NULL, NULL, NULL, 'Mayra', 'Colunga', '13234779945', 'mayra_colunga@yahoo.com', '2023-08-18 06:20:11', '2023-08-18 06:20:11', 0, 23, 'MAST-9564'),
+('01H5RGSFAZPA0TSMY7Z', NULL, NULL, NULL, NULL, 'Mayra', 'Colunga', '13234779945', 'mayra_colunga@yahoo.com', '2023-08-18 06:20:11', '2023-08-18 06:20:11', 0, 23, 'MAST-9564'),
+('01H5RGSFAZX14ZSV7WV', NULL, NULL, NULL, NULL, 'Mayra', 'Colunga', '13234779945', 'mayra_colunga@yahoo.com', '2023-08-18 06:20:11', '2023-08-18 06:20:11', 0, 23, 'MAST-9564'),
+('01H5VPV4NPFN44V20F4', NULL, NULL, NULL, NULL, 'Liliana', 'Mata', '17145147613', 'lili.mata@ymail.com', '2023-08-18 06:20:11', '2023-08-18 06:20:11', 0, 23, 'AMEX-1005'),
+('01H60D56Q8TYC2EQJ36', NULL, NULL, NULL, NULL, 'Leonel', 'Gonzales', '16264618286', 'gonzalezleonel699@gmail.com', '2023-08-18 06:20:11', '2023-08-18 06:20:11', 0, 23, 'VISA-9962'),
+('01H60D56QAF03AGY73M', NULL, NULL, NULL, NULL, 'Leonel', 'Gonzales', '16264618286', 'gonzalezleonel699@gmail.com', '2023-08-18 06:20:11', '2023-08-18 06:20:11', 0, 23, 'VISA-9962'),
+('01H62BB1MJDT8EQT2MF', NULL, NULL, NULL, NULL, 'Angelica', 'Estrada', '19512176677', 'perris3769@hotmail.com', '2023-08-18 06:20:11', '2023-08-18 06:20:11', 0, 23, 'VISA-0401'),
+('01H62BB1MKMC09FXRN9', NULL, NULL, NULL, NULL, 'Angelica', 'Estrada', '19512176677', 'perris3769@hotmail.com', '2023-08-18 06:20:11', '2023-08-18 06:20:11', 0, 23, 'VISA-0401'),
+('01H630J38TEXARZBY00', NULL, NULL, NULL, NULL, 'José Luis', 'Alvarado', '13107355687', 'ppdon347@gmail.com', '2023-08-18 06:20:11', '2023-08-18 06:20:11', 0, 23, 'VISA-4428'),
+('01H630J38VCWJR076EM', NULL, NULL, NULL, NULL, 'José Luis', 'Alvarado', '13107355687', 'ppdon347@gmail.com', '2023-08-18 06:20:11', '2023-08-18 06:20:11', 0, 23, 'VISA-4428'),
+('01H632WHTAQTV9FAJ74', NULL, NULL, NULL, NULL, 'Marii', 'Becerra', '18186318883', 'mario.cb88@iclou.com', '2023-08-18 06:20:11', '2023-08-18 06:20:11', 0, 23, 'VISA-2295'),
+('01H632WHTB39H7B9SCC', NULL, NULL, NULL, NULL, 'Marii', 'Becerra', '18186318883', 'mario.cb88@iclou.com', '2023-08-18 06:20:11', '2023-08-18 06:20:11', 0, 23, 'VISA-2295'),
+('01H636K5EZ1CEGNE7KD', NULL, NULL, NULL, NULL, 'Cindy', 'Acosta', '16264096318', 'cindyacosta13@gmail.com', '2023-08-18 06:20:11', '2023-08-18 06:20:11', 0, 23, 'MAST-1795'),
+('01H65274ZWRXKWK8MWW', NULL, NULL, NULL, NULL, 'Osvaldo', 'Martinez', '13237705995', 'osvaldom23@icloud.com', '2023-08-18 06:20:11', '2023-08-18 06:20:11', 0, 23, 'VISA-8775'),
+('01H65VPBSASPRB4Q4QM', NULL, NULL, NULL, NULL, 'Juan', 'Ortega', '19093428444', 'lord1js@yahoo.com', '2023-08-18 06:20:11', '2023-08-18 06:20:11', 0, 23, 'MAST-1923'),
+('01H65VPBSD1Y551QQPP', NULL, NULL, NULL, NULL, 'Juan', 'Ortega', '19093428444', 'lord1js@yahoo.com', '2023-08-18 06:20:11', '2023-08-18 06:20:11', 0, 23, 'MAST-1923'),
+('01H6J1D0H2F0E4PNS79', NULL, NULL, NULL, NULL, 'Cristina', 'Munoz', '13236029292', 'cristinamunoz0001@gmail.com', '2023-08-18 06:20:11', '2023-08-18 06:20:11', 0, 23, 'VISA-0149'),
+('01H6J1D0H2PKPPSHDJ8', NULL, NULL, NULL, NULL, 'Cristina', 'Munoz', '13236029292', 'cristinamunoz0001@gmail.com', '2023-08-18 06:20:11', '2023-08-18 06:20:11', 0, 23, 'VISA-0149'),
+('01H6MXWDYF52MHGFE1B', NULL, NULL, NULL, NULL, 'Lilia', 'Alfaro', '16264096764', 'liliaalfaro@netzero.net', '2023-08-18 06:20:11', '2023-08-18 06:20:11', 0, 23, 'MAST-5389'),
+('01H6MXWDYG70BXFN7E9', NULL, NULL, NULL, NULL, 'Lilia', 'Alfaro', '16264096764', 'liliaalfaro@netzero.net', '2023-08-18 06:20:11', '2023-08-18 06:20:11', 0, 23, 'MAST-5389'),
+('01H6PXN4E4G8RTWREZ5', NULL, NULL, NULL, NULL, 'Manuela', 'BAILON', '13238757882', 'manuela.bailon325@gmail.com', '2023-08-18 06:20:11', '2023-08-18 06:20:11', 0, 23, 'VISA-0988'),
+('01H6PXN4E5FR0GBCZVS', NULL, NULL, NULL, NULL, 'Manuela', 'BAILON', '13238757882', 'manuela.bailon325@gmail.com', '2023-08-18 06:20:11', '2023-08-18 06:20:11', 0, 23, 'VISA-0988'),
+('01H6QNCGA5YARAY16SP', NULL, NULL, NULL, NULL, 'Jorge', 'Hernandez', '12132922547', 'jorgehernandez11600@gmail.com', '2023-08-18 06:20:11', '2023-08-18 06:20:11', 0, 23, 'MAST-2897'),
+('01H6QPJ1GSNGXGMAEAZ', NULL, NULL, NULL, NULL, 'Maria', 'Castillo', '13234765114', 'estrellita01172592.mc@gmail.com', '2023-08-18 06:20:11', '2023-08-18 06:20:11', 0, 23, 'VISA-3766'),
+('01H6QPMKGPZM8AEA1HW', NULL, NULL, NULL, NULL, 'David', 'Morales', '13264890324', 'dav1dmorales@icloud.com', '2023-08-18 06:20:11', '2023-08-18 06:20:11', 0, 23, 'VISA-6151'),
+('01H6QPMKGQ1DVETQQYD', NULL, NULL, NULL, NULL, 'David', 'Morales', '13264890324', 'dav1dmorales@icloud.com', '2023-08-18 06:20:11', '2023-08-18 06:20:11', 0, 23, 'VISA-6151'),
+('01H6RJCHWKHD8QM892D', NULL, NULL, NULL, NULL, 'Belinda', 'Juarez', '16263245783', 'belindajuarez71@yahoo.com', '2023-08-18 06:20:11', '2023-08-18 06:20:11', 0, 23, 'VISA-2158'),
+('01H6RJCHWMTYYQSGT16', NULL, NULL, NULL, NULL, 'Belinda', 'Juarez', '16263245783', 'belindajuarez71@yahoo.com', '2023-08-18 06:20:11', '2023-08-18 06:20:11', 0, 23, 'VISA-2158'),
+('01H6SWBN9PMN797Z9B4', NULL, NULL, NULL, NULL, 'Melissa', 'Garcia', '19097316037', 'melissa18221@gmail.com', '2023-08-18 06:20:11', '2023-08-18 06:20:11', 0, 23, 'VISA-9402'),
+('01H6SWBN9QVZX4FMMWF', NULL, NULL, NULL, NULL, 'Melissa', 'Garcia', '19097316037', 'melissa18221@gmail.com', '2023-08-18 06:20:11', '2023-08-18 06:20:11', 0, 23, 'VISA-9402'),
+('01H6T14QTCBGNHKF001', NULL, NULL, NULL, NULL, 'Selena', 'Carmona Medina', '13108494576', 'j.jesuszmzapata@gmail.com', '2023-08-18 06:20:11', '2023-08-18 06:20:11', 0, 23, 'VISA-2110'),
+('01H6T14QTD9782WYCW0', NULL, NULL, NULL, NULL, 'Selena', 'Carmona Medina', '13108494576', 'j.jesuszmzapata@gmail.com', '2023-08-18 06:20:11', '2023-08-18 06:20:11', 0, 23, 'VISA-2110'),
+('01H6T1SCPV0GAD6WF5M', NULL, NULL, NULL, NULL, 'Marco', 'Flores', '19098055543', 'floresmarco9075@gmail.com', '2023-08-18 06:20:11', '2023-08-18 06:20:11', 0, 23, 'VISA-8121'),
+('01H6T1SCPWQJRQZQZC9', NULL, NULL, NULL, NULL, 'Marco', 'Flores', '19098055543', 'floresmarco9075@gmail.com', '2023-08-18 06:20:11', '2023-08-18 06:20:11', 0, 23, 'VISA-8121'),
+('01H6WAWM33DX4Q9PSH9', NULL, NULL, NULL, NULL, 'Apolonio', 'Travis Quinones', '16613407507', 'apoloniozamora@yahoo.com', '2023-08-18 06:20:11', '2023-08-18 06:20:11', 0, 23, 'VISA-1968'),
+('01H6WDX5SGYNK34QDJW', NULL, NULL, NULL, NULL, 'Cristian', 'Sanchez', '17472449557', 'kyara022302@gmail.com', '2023-08-18 06:20:11', '2023-08-18 06:20:11', 0, 23, 'VISA-3894'),
+('01H6WDX5SJHP3XZ5302', NULL, NULL, NULL, NULL, 'Cristian', 'Sanchez', '17472449557', 'kyara022302@gmail.com', '2023-08-18 06:20:11', '2023-08-18 06:20:11', 0, 23, 'VISA-3894'),
+('01H6WS12F2RSZJMCXP5', NULL, NULL, NULL, NULL, 'Erika', 'Nopaltitla', '16269794069', 'erikanopaltitla@icloud.com', '2023-08-18 06:20:11', '2023-08-18 06:20:11', 0, 23, 'VISA-3088'),
+('01H6WS12F35JF5X4GXH', NULL, NULL, NULL, NULL, 'Erika', 'Nopaltitla', '16269794069', 'erikanopaltitla@icloud.com', '2023-08-18 06:20:11', '2023-08-18 06:20:11', 0, 23, 'VISA-3088'),
+('01H6WS12F3SNADD3HMC', NULL, NULL, NULL, NULL, 'Erika', 'Nopaltitla', '16269794069', 'erikanopaltitla@icloud.com', '2023-08-18 06:20:11', '2023-08-18 06:20:11', 0, 23, 'VISA-3088'),
+('01H6XZ30AT5XKFNE1QE', NULL, NULL, NULL, NULL, 'Aracely', 'Samaniego', '13232739346', 'aracelys12172@yahoo.com', '2023-08-18 06:20:11', '2023-08-18 06:20:11', 0, 23, 'VISA-3088'),
+('01H6XZ30ATK5ZQ7V1B7', NULL, NULL, NULL, NULL, 'Aracely', 'Samaniego', '13232739346', 'aracelys12172@yahoo.com', '2023-08-18 06:20:11', '2023-08-18 06:20:11', 0, 23, 'VISA-3088'),
+('01H6YJ2K4H6P259YNBR', NULL, NULL, NULL, NULL, 'Jose S', 'Pérez', '16613875958', 'persaljo78@gmail.com', '2023-08-18 06:20:11', '2023-08-18 06:20:11', 0, 23, 'VISA-1688'),
+('01H6YJ2K4J0BPNK2WJW', NULL, NULL, NULL, NULL, 'Jose S', 'Pérez', '16613875958', 'persaljo78@gmail.com', '2023-08-18 06:20:11', '2023-08-18 06:20:11', 0, 23, 'VISA-1688'),
+('01H6Z23YFWTGXMBZ55D', NULL, NULL, NULL, NULL, 'Monica', 'Flores', '16265871426', 'inca_188@hotmail.com', '2023-08-18 06:20:11', '2023-08-18 06:20:11', 0, 23, 'VISA-8874'),
+('01H6Z23YFXHDQJQMPAA', NULL, NULL, NULL, NULL, 'Monica', 'Flores', '16265871426', 'inca_188@hotmail.com', '2023-08-18 06:20:11', '2023-08-18 06:20:11', 0, 23, 'VISA-8874'),
+('01H6Z5V6WDM4DAHKWMB', NULL, NULL, NULL, NULL, 'Maria', 'Cardenas', '17143909190', 'mdjcardenas27@gmail.com', '2023-08-18 06:20:11', '2023-08-18 06:20:11', 0, 23, 'MAST-3626'),
+('01H6Z5V6WEEM9SBQ94G', NULL, NULL, NULL, NULL, 'Maria', 'Cardenas', '17143909190', 'mdjcardenas27@gmail.com', '2023-08-18 06:20:11', '2023-08-18 06:20:11', 0, 23, 'MAST-3626'),
+('01H70D5X19VDYG54HRR', NULL, NULL, NULL, NULL, 'Denise', 'Mendez', '15626853653', 'dee_0380@yahoo.com', '2023-08-18 06:20:11', '2023-08-18 06:20:11', 0, 23, 'VISA-9667'),
+('01H717VT6DDEFGGZHMG', NULL, NULL, NULL, NULL, 'Edgardo', 'Santiago', '16265429407', 'gatito.96@icloud.com', '2023-08-18 06:20:11', '2023-08-18 06:20:11', 0, 23, 'VISA-3576'),
+('01H717VT6E1B8ZBZP3P', NULL, NULL, NULL, NULL, 'Edgardo', 'Santiago', '16265429407', 'gatito.96@icloud.com', '2023-08-18 06:20:11', '2023-08-18 06:20:11', 0, 23, 'VISA-3576'),
+('01H71CHZT9G96V9T7ZW', NULL, NULL, NULL, NULL, 'Ariana', 'Alonso Flores', '16265596994', 'ariaalo6@gmail.com', '2023-08-18 06:20:11', '2023-08-18 06:20:11', 0, 23, 'VISA-3947'),
+('01H71W8GPJKM2B1RE6D', NULL, NULL, NULL, NULL, 'Alejandro', 'Rosales', '19514277528', 'rosalesalejandro005@gmail.com', '2023-08-18 06:20:11', '2023-08-18 06:20:11', 0, 23, 'MAST-8766'),
+('01H71W8GPKJGNHTHHYB', NULL, NULL, NULL, NULL, 'Alejandro', 'Rosales', '19514277528', 'rosalesalejandro005@gmail.com', '2023-08-18 06:20:11', '2023-08-18 06:20:11', 0, 23, 'MAST-8766'),
+('01H71WAKDGW9N45SVF3', NULL, NULL, NULL, NULL, 'Axel', 'Ramirez', '13234988290', 'axeram1208@gmail.com', '2023-08-18 06:20:11', '2023-08-18 06:20:11', 0, 23, 'VISA-7668'),
+('01H71WAKDJDPS5YJ64D', NULL, NULL, NULL, NULL, 'Axel', 'Ramirez', '13234988290', 'axeram1208@gmail.com', '2023-08-18 06:20:11', '2023-08-18 06:20:11', 0, 23, 'VISA-7668'),
+('01H71Z637N31YADTQ9Q', NULL, NULL, NULL, NULL, 'Kimberly', 'Solis', '13109016012', 'kimsolis0601@icloud.com', '2023-08-18 06:20:11', '2023-08-18 06:20:11', 0, 23, 'VISA-7548'),
+('01H71Z637PVGQPXDQ23', NULL, NULL, NULL, NULL, 'Kimberly', 'Solis', '13109016012', 'kimsolis0601@icloud.com', '2023-08-18 06:20:11', '2023-08-18 06:20:11', 0, 23, 'VISA-7548'),
+('01H727M2KDFVHF4QZH0', NULL, NULL, NULL, NULL, 'Lizbeth', 'Villa', '12134512017', 'lizbethv0095@gmail.com', '2023-08-18 06:20:11', '2023-08-18 06:20:11', 0, 23, 'VISA-5459'),
+('01H727M2KG51E8Z4YGW', NULL, NULL, NULL, NULL, 'Lizbeth', 'Villa', '12134512017', 'lizbethv0095@gmail.com', '2023-08-18 06:20:11', '2023-08-18 06:20:11', 0, 23, 'VISA-5459'),
+('01H7298CWZ0MQT2KFEC', NULL, NULL, NULL, NULL, 'Ariana', 'Alonso Flores', '16265596994', 'ariaalo6@gmail.com', '2023-08-18 06:20:11', '2023-08-18 06:20:11', 0, 23, 'MAST-1769'),
+('01H73G6Y66PTW7XQMVC', NULL, NULL, NULL, NULL, 'Jesse', 'Anguiano', '13236747354', 'jesseanguiano55@gmail.com', '2023-08-18 06:20:11', '2023-08-18 06:20:11', 0, 23, 'VISA-4934'),
+('01H73G6Y68A85VRVQGP', NULL, NULL, NULL, NULL, 'Jesse', 'Anguiano', '13236747354', 'jesseanguiano55@gmail.com', '2023-08-18 06:20:11', '2023-08-18 06:20:11', 0, 23, 'VISA-4934'),
+('01H73MA8FJYWGHGHF0K', NULL, NULL, NULL, NULL, 'Cynthia', 'Carrillo', '19514425534', 'cyncarrillo2@gmail.com', '2023-08-18 06:20:11', '2023-08-18 06:20:11', 0, 23, 'VISA-0155'),
+('01H73ZMXAP2RGRZCY7W', NULL, NULL, NULL, NULL, 'Emmanuel', 'Casillas', '13107549160', 'lookout322@hotmail.com', '2023-08-18 06:20:11', '2023-08-18 06:20:11', 0, 23, 'VISA-7299'),
+('01H73ZMXAQ4ZEWSVEJG', NULL, NULL, NULL, NULL, 'Emmanuel', 'Casillas', '13107549160', 'lookout322@hotmail.com', '2023-08-18 06:20:11', '2023-08-18 06:20:11', 0, 23, 'VISA-7299'),
+('01H73ZQ2TSBS8M6AAN0', NULL, NULL, NULL, NULL, 'Soledad', 'Gutierrez', '16265411477', 'gutierrezs2587@live.com', '2023-08-18 06:20:11', '2023-08-18 06:20:11', 0, 23, 'VISA-1726'),
+('01H744H430BZFRWV9N3', NULL, NULL, NULL, NULL, 'Esther', 'Esparza', '18182814496', 'vtgesther@gmail.com', '2023-08-18 06:20:11', '2023-08-18 06:20:11', 0, 23, 'VISA-8222'),
+('01H744QEH2EWJ7N1NWH', NULL, NULL, NULL, NULL, 'Cristina', 'Rodriguez', '12135905969', 'cristinarodriguez582@gmail.com', '2023-08-18 06:20:11', '2023-08-18 06:20:11', 0, 23, 'VISA-0267'),
+('01H744QEH53FKC5FP6T', NULL, NULL, NULL, NULL, 'Cristina', 'Rodriguez', '12135905969', 'cristinarodriguez582@gmail.com', '2023-08-18 06:20:11', '2023-08-18 06:20:11', 0, 23, 'VISA-0267');
 
 -- --------------------------------------------------------
 
@@ -224,9 +295,7 @@ CREATE TABLE `users` (
 
 INSERT INTO `users` (`id`, `name`, `role`, `email`, `email_verified_at`, `password`, `remember_token`, `created_at`, `updated_at`, `event_id`) VALUES
 (1, 'Bataino', 'super-admin', 'bataino.ronaldo@gmail.com', NULL, '$2y$10$R/Z1HDgVkQHE9JMQehp/fe1Lyphn43UNCoaFQeNhSBO.VNl/syyta', 'X7prCKffYiSOl1rj0a0avWjvp7PdjL7sNuBCdcrvxAAli0a9xr3I6Et9ihpS', '2023-07-30 08:44:22', '2023-07-30 08:44:22', NULL),
-(3, NULL, 'user', 'Carry', NULL, '$2y$10$4mY3Uj3OyZp/CqZeykHvDu/7tU0I.zPBeBU5GJZ3YdGk27sYp2SQC', NULL, '2023-08-11 13:23:52', '2023-08-11 13:23:52', NULL),
-(4, NULL, 'user', 'bataino', NULL, '$2y$10$6YYQnI9gkJpGbkrygarxZ.qye68EnJVzjKvnXkmM04MacI5JMpqoi', NULL, '2023-08-11 13:29:40', '2023-08-11 13:29:40', NULL),
-(5, NULL, 'user', 'batingo', NULL, '$2y$10$avsfSBrmTCieIB3VzMYBl.Cx8S4vZgUW/J0Nl96zXCEmHaPXKYdR2', NULL, '2023-08-11 13:56:29', '2023-08-11 13:56:29', 18);
+(13, NULL, 'super-admin', 'admin', NULL, '$2y$10$7WIscEjQPs9281Qnw2rwou6ZOqjFx3xLfZ4FjdPnhHeLm3NQuqAzi', NULL, '2023-08-18 06:20:11', '2023-08-18 06:20:11', NULL);
 
 --
 -- Indexes for dumped tables
@@ -288,7 +357,7 @@ ALTER TABLE `users`
 -- AUTO_INCREMENT for table `events`
 --
 ALTER TABLE `events`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=19;
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=24;
 
 --
 -- AUTO_INCREMENT for table `failed_jobs`
@@ -300,19 +369,19 @@ ALTER TABLE `failed_jobs`
 -- AUTO_INCREMENT for table `migrations`
 --
 ALTER TABLE `migrations`
-  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=29;
+  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=30;
 
 --
 -- AUTO_INCREMENT for table `personal_access_tokens`
 --
 ALTER TABLE `personal_access_tokens`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=27;
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=33;
 
 --
 -- AUTO_INCREMENT for table `users`
 --
 ALTER TABLE `users`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=14;
 
 --
 -- Constraints for dumped tables
