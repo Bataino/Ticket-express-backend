@@ -76,6 +76,7 @@ class TicketController extends Controller
         if (!$ticket->is_scanned) {
             $ticket->is_scanned = 1;
             $ticket->save();
+            $ticket->is_valid = true;
             return $this->sendResponse($ticket, 'Ticket scanned successfully');
         }
         //

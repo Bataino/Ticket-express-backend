@@ -25,6 +25,8 @@ Route::post('register', [UserController::class, 'register']);
 Route::middleware('auth:sanctum')->group(function () {
     Route::post('user', [UserController::class, 'create']);
     Route::post('event', [EventController::class, 'create']);
+    Route::post('event/update/{id}', [EventController::class, 'update']);
+    Route::delete('event/delete/{id}', [EventController::class, 'destroy']);
     Route::get('event', [EventController::class, 'index']);
     Route::get('event/{id}', [EventController::class, 'show']);
     Route::get('ticket', [TicketController::class, 'index']);

@@ -128,6 +128,58 @@ class EventController extends Controller
         }
     }
 
+    public function update(Request $request, $id)
+    {
+        if (auth()->user()->role != 'super-admin') {
+            return $this->sendError([], "Unauthenticated", 401);
+        }
+        $validator = Validator::make($request->all(), [
+            'file' => 'mimes:csv|required',
+            'event_id' => 'integer',
+        ]);
+
+        $id = $id ?? $request->event_id;
+
+        if ($validator->fails()) {
+            return $this->sendError('Validation Error.', $validator->errors());
+        }
+
+        $event = Event::find($id);
+        if ($file = $request->file('file')) {
+            $path = $file->move('public/files/csv');
+            $tickets = $this->csvToArray(public_path($path->getPathname()));
+
+            foreach ($tickets as $ticket) {
+                try {
+
+                    // return  $this->sendResponse($this->getValueFromHint($ticket, "first"),"");
+                    $id = $this->getValueFromHint($ticket, "id");
+                    $newTicket = Ticket::firstOrNew(['id' => $id]);
+                    // $newTicket = new Ticket();
+                    // $newTicket->id = $id;
+                    // return [$newTicket->id, $id];
+                    $newTicket->type = $this->getValueFromHint($ticket, "type");
+                    $newTicket->level = $this->getValueFromHint($ticket, "level");
+                    $newTicket->price = $this->getValueFromHint($ticket, "price");
+                    $newTicket->page_name = $this->getValueFromHint($ticket, "page");
+                    $newTicket->first_name = $this->getValueFromHint($ticket, "first");
+                    $newTicket->last_name = $this->getValueFromHint($ticket, "last");
+                    $newTicket->email = $this->getValueFromHint($ticket, "mail");
+                    $newTicket->phone = $this->getValueFromHint($ticket, "number");
+                    $newTicket->payment = $this->getValueFromHint($ticket, "payment");
+                    $newTicket->event_id = $event->id;
+                    $newTicket->save();
+                } catch (Exception $e) {
+                    $event->delete();
+                    $this->sendError('Could not parse csv file', $e);
+                }
+            }
+
+            return $this->sendResponse(['user' => $request->user()], "Ticket created Successfully");
+            //
+        }
+    }
+
     /**
      * Store a newly created resource in storage.
      *
@@ -180,10 +232,6 @@ class EventController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
-    {
-        //
-    }
 
     /**
      * Remove the specified resource from storage.
@@ -193,6 +241,20 @@ class EventController extends Controller
      */
     public function destroy($id)
     {
+        $event = Event::find($id);
+        if (!$event) {
+            return $this->sendError([], "Event not Found", 404);
+        }
+        $users = User::where('event_id', $id)->get();
+        $tickets = Ticket::where('event_id', $id)->get();
+        foreach ($users as $user) {
+            $user->delete();
+        }
+        foreach ($tickets as $ticket) {
+            $ticket->delete();
+        }
+        $event->delete();
+        return $this->sendResponse([], "Event has been deleted");
         //
     }
 }
