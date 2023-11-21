@@ -7,6 +7,7 @@ use App\Models\Ticket;
 use App\Models\User;
 use Exception;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Gate;
 use Validator;
 
 class EventController extends Controller
@@ -16,48 +17,48 @@ class EventController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
-        if (auth()->user()->role != 'super-admin') {
-            return $this->sendError([], "Unauthenticated", 401);
+        $keyword = $request->input('keyword') ?? '';
+        $country = $request->input('country');
+        $state = $request->input('state');
+        $date = $request->input('date');
+        $venue_id = $request->input('venue_id');
+        // $end_date = $request->input('end_date');
+        // Search Event by name, description,
+        // Search Event by venue : address, country, city, title, state
+        // filter by date, time_zone
+        // Sort by date automatically,
+
+        $events = Event::where(function ($query) use ($keyword) {
+            return $query->where('description', 'LIKE', "%{$keyword}%");
+        });
+
+        $events = Event::where('title', 'ODS');
+        // return Event::all();
+        if ($venue_id) {
+            $events->where('venue_id', $venue_id);
         }
-        return $this->sendResponse(Event::where('id', '!=', null)->orderBy('created_at', 'DESC')->get(), ""); //
-    }
-
-    function csvToArray($filename = '', $delimiter = ',')
-    {
-        if (!file_exists($filename) || !is_readable($filename))
-            return false;
-
-        $header = null;
-        $data = array();
-        if (($handle = fopen($filename, 'r')) !== false) {
-            while (($row = fgetcsv($handle, 1000, $delimiter)) !== false) {
-                if (!$header)
-                    $header = $row;
-                else
-                    $data[] = array_combine($header, $row);
-            }
-            fclose($handle);
+        if ($date) {
+            $events->whereDate('created_at', $date);
         }
 
-        return $data;
+        // $events->whereHas('venue', function ($query) use($country, $state, $keyword) {
+        //     if($country)
+        //         $query->where('country', $country);
+        //     if($state)
+        //         $query->where('state', $state);
+
+        //     $query->orWhere('title','like','%'.$keyword.'%')->orWhere('address','like','%'.$keyword.'%')->orWhere('state','like','%'.$keyword.'%');
+        //     return $query->get();
+        // });  
+
+        // $events->orderBy('start', 'DESC');
+        $events->get();
+
+        return $this->sendResponse($events, "Search Result here");
     }
 
-    function getValueFromHint(array $arr, String $hint)
-    {
-        $k = '';
-        $newArr = array_filter($arr, function ($key) use ($hint, &$k) {
-            // $key = str_replace(" ","",$key);
-            // $k = $key;
-            return str_contains(strtolower($key), $hint);
-        }, ARRAY_FILTER_USE_KEY);
-
-        if (count($newArr) > 0)
-            return array_values($newArr)[0];
-
-        return null;
-    }
 
     /**
      * Show the form for creating a new resource.
@@ -66,14 +67,15 @@ class EventController extends Controller
      */
     public function create(Request $request)
     {
-        if (auth()->user()->role != 'super-admin') {
-            return $this->sendError([], "Unauthenticated", 401);
-        }
         $validator = Validator::make($request->all(), [
-            'file' => 'mimes:csv|required',
-            'name' => 'string|required',
-            'username' => 'string|required|unique:users,email',
-            'password' => 'string|required|min:6'
+            'title' => 'string|required',
+            'start' => 'required|date',
+            'end' => 'required|date|after_or_equal:start',
+            'description' => 'string|required',
+            'venue_id' => 'integer|required',
+            'files' => 'required',
+            'files.*' => 'image|mimes:jpeg,png,jpg,gif,svg,mp4,3gp|max:2048',
+            'time_zone' => 'required'
         ]);
 
 
@@ -81,103 +83,89 @@ class EventController extends Controller
             return $this->sendError('Validation Error.', $validator->errors());
         }
 
-        $event = Event::create([
-            'name' => $request->input('name')
-        ]);
+        $data = $request->all();
+        $data['start'] = date('Y-m-d H:i:s', strtotime($data['start']));
+        $data['end'] = date('Y-m-d H:i:s', strtotime($data['end']));
 
+        $user =  auth()->user();
+        $data['user_id'] = $user->id;
+        $data['files'] = uploadImages($request, "files", "events-" . $user->id);
+        // dd(uploadImages($request,"files", "events-".$user->id));
 
-
-        if ($file = $request->file('file')) {
-            $path = $file->move('public/files/csv');
-            $tickets = $this->csvToArray(public_path($path->getPathname()));
-
-            foreach ($tickets as $ticket) {
-                try {
-
-                    // return  $this->sendResponse($this->getValueFromHint($ticket, "first"),"");
-                    $id = $this->getValueFromHint($ticket, "id");
-                    $newTicket = Ticket::firstOrNew(['id' => $id]);
-                    // $newTicket = new Ticket();
-                    // $newTicket->id = $id;
-                    // return [$newTicket->id, $id];
-                    $newTicket->type = $this->getValueFromHint($ticket, "type");
-                    $newTicket->level = $this->getValueFromHint($ticket, "level");
-                    $newTicket->price = $this->getValueFromHint($ticket, "price");
-                    $newTicket->page_name = $this->getValueFromHint($ticket, "page");
-                    $newTicket->first_name = $this->getValueFromHint($ticket, "first");
-                    $newTicket->last_name = $this->getValueFromHint($ticket, "last");
-                    $newTicket->email = $this->getValueFromHint($ticket, "mail");
-                    $newTicket->phone = $this->getValueFromHint($ticket, "number");
-                    $newTicket->payment = $this->getValueFromHint($ticket, "payment");
-                    $newTicket->event_id = $event->id;
-                    $newTicket->save();
-                } catch (Exception $e) {
-                    $event->delete();
-                    $this->sendError('Could not parse csv file', $e);
-                }
-            }
-
-            User::create([
-                'email' => $request->input('username'),
-                'password' => bcrypt($request->input('password')),
-                'role' => 'admin',
-                'event_id' => $event->id
-            ]);
-            return $this->sendResponse(['user' => $request->user()], "Ticket created Successfully");
-            //
-        }
+        $event = Event::create($data);
+        $event->save();
+        return $this->sendResponse($event, "Event has been created");
     }
 
     public function update(Request $request, $id)
     {
-        if (auth()->user()->role != 'super-admin') {
-            return $this->sendError([], "Unauthenticated", 401);
-        }
         $validator = Validator::make($request->all(), [
-            'file' => 'mimes:csv|required',
-            'event_id' => 'integer',
+            'start' => 'date',
+            'end' => 'date|after_or_equal:start',
+            'venue_id' => 'integer',
+            'files.*' => 'image|mimes:jpeg,png,jpg,gif,svg,mp4,3gp|max:2048',
         ]);
 
-        $id = $id ?? $request->event_id;
+        if ($validator->fails()) {
+            return $this->sendError('Validation Error.', $validator->errors());
+        }
+
+        $data = array_filter($request->all(['title', 'start', 'end', 'description', 'venue_id', 'time_zone']));
+        $event = Event::find($id);
+
+        if ($request->file('files'))
+            $data['files'] = uploadImages($request, "files", "events-" . $event->user_id);
+
+        $data['start'] = date('Y-m-d H:i:s', strtotime(@$data['start'] ?? $event->start));
+        $data['end'] = date('Y-m-d H:i:s', strtotime(@$data['end'] ?? $event->end));
+
+        if (Gate::denies('isOwner', $event->user_id))
+            return $this->sendError('User not authorized.', [], 401);
+
+        $event->update($data);
+        return $this->sendResponse([$event], "Event updated Successfully");
+    }
+
+    public function addImage(Request $request, $id)
+    {
+        $validator = Validator::make($request->all(), [
+            'files' => 'required',
+            'files.*' => 'image|mimes:jpeg,png,jpg,gif,svg,mp4,3gp|max:2048',
+        ]);
 
         if ($validator->fails()) {
             return $this->sendError('Validation Error.', $validator->errors());
         }
 
         $event = Event::find($id);
-        if ($file = $request->file('file')) {
-            $path = $file->move('public/files/csv');
-            $tickets = $this->csvToArray(public_path($path->getPathname()));
+        $user = auth()->user();
 
-            foreach ($tickets as $ticket) {
-                try {
+        if(Gate::denies('isOwner', $event->user_id))
+            return $this->sendError('User not authorized.', [], 401);
 
-                    // return  $this->sendResponse($this->getValueFromHint($ticket, "first"),"");
-                    $id = $this->getValueFromHint($ticket, "id");
-                    $newTicket = Ticket::firstOrNew(['id' => $id]);
-                    // $newTicket = new Ticket();
-                    // $newTicket->id = $id;
-                    // return [$newTicket->id, $id];
-                    $newTicket->type = $this->getValueFromHint($ticket, "type");
-                    $newTicket->level = $this->getValueFromHint($ticket, "level");
-                    $newTicket->price = $this->getValueFromHint($ticket, "price");
-                    $newTicket->page_name = $this->getValueFromHint($ticket, "page");
-                    $newTicket->first_name = $this->getValueFromHint($ticket, "first");
-                    $newTicket->last_name = $this->getValueFromHint($ticket, "last");
-                    $newTicket->email = $this->getValueFromHint($ticket, "mail");
-                    $newTicket->phone = $this->getValueFromHint($ticket, "number");
-                    $newTicket->payment = $this->getValueFromHint($ticket, "payment");
-                    $newTicket->event_id = $event->id;
-                    $newTicket->save();
-                } catch (Exception $e) {
-                    $event->delete();
-                    $this->sendError('Could not parse csv file', $e);
-                }
-            }
+        $images = uploadImages($request, "files", "events-" . $event->user_id);
+        // dd($event->files);
+        $data["files"] = array_unique(array_merge($event->files, $images));
 
-            return $this->sendResponse(['user' => $request->user()], "Ticket created Successfully");
-            //
-        }
+
+        $event->update($data);
+        return $this->sendResponse([$event], "Event updated Successfully");
+    }
+
+    public function deleteImage($id, $index)
+    {
+        $event = Event::find($id);
+
+        if(Gate::denies('isOwner', $event->user_id))
+            return $this->sendError('User not authorized.', [], 401);
+        $images = $event->files;
+        if(count($images) <= 1)
+            return $this->sendError("Event must have at least an image", [], 400);
+        array_splice($images, $index, 1);
+
+        $data["files"] = $images;
+        $event->update($data);
+        return $this->sendResponse([$event], "Event updated Successfully");
     }
 
     /**
@@ -198,20 +186,7 @@ class EventController extends Controller
      */
     public function show($id)
     {
-        if (auth()->user()->role == 'super-admin') {
-            $event = Event::find($id);
-            $event->users = User::where('event_id', $event->id)->count();
-            if ($event)
-                return $this->sendResponse($event, "Event details");
-            else
-                return $this->sendError(null, "Event not Found", 404);
-        } else if (auth()->user()->role == 'admin') {
-            $event = Event::where('id', auth()->user()->event_id)->first();
-            $event->users = User::where('event_id', $event->id)->count();
-            return $this->sendResponse($event, "Event details");
-        } else
-            return $this->sendError([], "Unauthenticated", 401);
-        // //
+        return $this->sendResponse(Event::find($id), "Got event by Id");
     }
 
     /**
@@ -245,13 +220,14 @@ class EventController extends Controller
         if (!$event) {
             return $this->sendError([], "Event not Found", 404);
         }
-        $users = User::where('event_id', $id)->get();
-        $tickets = Ticket::where('event_id', $id)->get();
-        foreach ($users as $user) {
-            $user->delete();
-        }
-        foreach ($tickets as $ticket) {
-            $ticket->delete();
+        // $tickets = Ticket::where('event_id', $id)->get();
+        // foreach ($tickets as $ticket) {
+        //     $ticket->delete();
+        // }
+
+        $ticket_levels = Ticket::where('event_id', $id)->get();
+        foreach ($ticket_levels as $tl) {
+            $tl->delete();
         }
         $event->delete();
         return $this->sendResponse([], "Event has been deleted");

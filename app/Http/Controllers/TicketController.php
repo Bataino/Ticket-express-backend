@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Ticket;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Validator;
 
 class TicketController extends Controller
@@ -15,24 +16,7 @@ class TicketController extends Controller
      */
     public function index(Request $request)
     {
-
-        if (auth()->user()->role == 'admin') {
-            $tickets = Ticket::where('event_id', auth()->user()->event_id)->get();
-            return $this->sendResponse($tickets, "");
-        }
-        if (auth()->user()->role == 'super-admin') {
-            $validator = Validator::make($request->all(), [
-                'event_id' => 'integer|required',
-            ]);
-
-            if ($validator->fails()) {
-                return $this->sendError('Validation Error.', $validator->errors());
-            }
-            $tickets = Ticket::where('event_id', $request->input('event_id'))->get();
-            return $this->sendResponse($tickets, "");
-        }
-
-        return $this->sendError([], "Unauthenticated", 401);
+        $tickets = Ticket::orderBy("created_at", "desc")->paginate(10);
         //
     }
 
@@ -54,6 +38,15 @@ class TicketController extends Controller
      */
     public function store(Request $request)
     {
+        $validator = Validator::make($request->all(), [
+            'ticket_level_id' => 'required',
+        ]);
+
+        if($validator->fails()){
+            return $this->sendError('Validation Error.', $validator->errors());       
+        }
+
+        // $ticket = Ticket::create($request->all('ticket_level_id', 'event_id', 'user_id', 'bought', 'order_id','qr_code','status'));
         //
     }
 
@@ -65,21 +58,14 @@ class TicketController extends Controller
      */
     public function show($id)
     {
-        $ticket = Ticket::find($id);
+        $ticket = Ticket::with('event')->findOrFail($id);
+        if($ticket)
+            return $this->sendError('Ticket not found', [], 401);
 
-        if (!$ticket) {
-            return $this->sendError([], 'Ticket not found');
-        }
-        if ($ticket->is_scanned) {
-            return $this->sendError($ticket, 'Ticket has been used', 422);
-        }
-        if (!$ticket->is_scanned) {
-            $ticket->is_scanned = 1;
-            $ticket->save();
-            $ticket->is_valid = true;
-            return $this->sendResponse($ticket, 'Ticket scanned successfully');
-        }
-        //
+        if(Gate::allows('isOwner', $ticket->event->user_id ?? 0))
+            return $this->sendError('User not authorized.', [], 401);
+        return $this->sendError('', [], 200);
+        
     }
 
     /**
