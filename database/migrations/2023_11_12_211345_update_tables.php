@@ -13,6 +13,11 @@ return new class extends Migration
      */
     public function up()
     {
+        
+        Schema::table('orders', function (Blueprint $table) {
+            $table->foreignId('event_id')->after('user_id')->nullable()->constrained('events')->onDelete('cascade');
+        });
+
         Schema::table('ticket_levels', function (Blueprint $table) {
             $table->boolean('is_available')->default(1);
             $table->integer('bought')->default(0)->change();
@@ -41,6 +46,11 @@ return new class extends Migration
      */
     public function down()
     {
+        
+        Schema::table('orders', function (Blueprint $table) {
+            $table->dropConstrainedForeignId('event_id');
+        });
+
         Schema::table('ticket_levels', function (Blueprint $table) {
             $table->dropColumn('is_available');
             $table->dropColumn('price');
@@ -54,5 +64,6 @@ return new class extends Migration
             $table->integer('phone');
             $table->string('email');
         });
+
     }
 };

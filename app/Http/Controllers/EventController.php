@@ -140,7 +140,7 @@ class EventController extends Controller
         $event = Event::find($id);
         $user = auth()->user();
 
-        if(Gate::denies('isOwner', $event->user_id))
+        if (Gate::denies('isOwner', $event->user_id))
             return $this->sendError('User not authorized.', [], 401);
 
         $images = uploadImages($request, "files", "events-" . $event->user_id);
@@ -156,16 +156,23 @@ class EventController extends Controller
     {
         $event = Event::find($id);
 
-        if(Gate::denies('isOwner', $event->user_id))
+        if (Gate::denies('isOwner', $event->user_id))
             return $this->sendError('User not authorized.', [], 401);
         $images = $event->files;
-        if(count($images) <= 1)
+        if (count($images) <= 1)
             return $this->sendError("Event must have at least an image", [], 400);
         array_splice($images, $index, 1);
 
         $data["files"] = $images;
         $event->update($data);
         return $this->sendResponse([$event], "Event updated Successfully");
+    }
+
+    public function showUser()
+    {
+        $user = auth()->user();
+        $events = Event::with('tickets')->with('orders')->where('user_id', $user->id)->get();
+        return $this->sendResponse($events, "Got event related to the User");
     }
 
     /**

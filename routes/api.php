@@ -37,7 +37,6 @@ Route::post('reset-password', [UserController::class, 'resetPassword']);
 Route::get('venue', [VenueController::class, 'index']);
 
 Route::get('event', [EventController::class, 'index']);
-Route::get('event/{id}', [EventController::class, 'show']);
 
 Route::get('discount/event/{event_id}', [DiscountController::class, 'get']);
 Route::get('level/{event_id}', [TicketLevelController::class, 'show']);
@@ -66,6 +65,7 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::post('/', [EventController::class, 'create']);
         Route::post('/{id}/image', [EventController::class, 'addImage']);
         Route::post('/{id}', [EventController::class, 'update']);
+        Route::get('/user', [EventController::class, 'showUser']);
 
         Route::delete('/{id}/image/{index}', [EventController::class, 'deleteImage']);
         Route::delete('/{id}', [EventController::class, 'destroy']);
@@ -117,3 +117,5 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::get('/{order_id}', [RefundController::class, 'show']);
     });
 });
+
+Route::get('event/{id}', [EventController::class, 'show']);
