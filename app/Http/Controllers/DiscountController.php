@@ -38,7 +38,7 @@ class DiscountController extends Controller
      */
 
      private function makeAllPassive(){
-            Discount::where('status', 'active')->update(['status' => 'passive']);
+            Discount::where('status', 1)->update(['status' => 0]);
 
      }
     public function create(Request $request)
@@ -54,11 +54,10 @@ class DiscountController extends Controller
             return $this->sendError('Validation Error.', $validator->errors());
         }
         $data = $request->all('event_id', 'title', 'percentage');
-        $this->makeAllPassive();
-        $data['status'] = 'active';
-
-        if (!$request->make_active) {
-            $data['status'] = 'passive';
+        
+        if ($request->make_active) {
+            $this->makeAllPassive();
+            $data['status'] = 1;
         }
         $discount = Discount::create($data);
 
@@ -108,13 +107,13 @@ class DiscountController extends Controller
      */
     public function update(Request $request, $id)
     {
-        $data = array_filter($request->all('title', 'percentage','status'));
+        $data = $request->only('title', 'percentage','status');
         $discount = Discount::where('id',$id)->with('event')->first();
         // dd($discount->event->id);
         if (Gate::denies('isOwner', $discount->event->user_id ))
             return $this->sendError('User not authorized.', [], 401);
         
-        if(@$data['status'] == 'active'){
+        if($data['status']){
             $this->makeAllPassive();
         }
         $discount->update($data);

@@ -13,6 +13,10 @@ return new class extends Migration
      */
     public function up()
     {
+        Schema::table("discounts", function (Blueprint $table) {
+            // $table->dropColumn("status");
+            $table->boolean("status")->default(false);
+        });
         
         Schema::table('orders', function (Blueprint $table) {
             $table->foreignId('event_id')->after('user_id')->nullable()->constrained('events')->onDelete('cascade');
@@ -46,7 +50,10 @@ return new class extends Migration
      */
     public function down()
     {
-        
+        Schema::table("discounts", function (Blueprint $table) {
+            $table->dropColumn("status");
+            // $table->boolean("status")->default(false);
+        });
         Schema::table('orders', function (Blueprint $table) {
             $table->dropConstrainedForeignId('event_id');
         });

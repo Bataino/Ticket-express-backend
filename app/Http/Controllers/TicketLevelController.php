@@ -43,7 +43,7 @@ class TicketLevelController extends Controller
             'event_id' => 'required',
             'quantity' => 'integer|required',
             'price' => 'numeric|required',
-            'limit' => 'integer|required',
+            'limit' => 'integer',
         ]);
 
         if ($validator->fails()) {
@@ -65,6 +65,8 @@ class TicketLevelController extends Controller
      */
     public function show($event_id)
     {
+        if (Gate::denies('isOwner', $level->event->user_id ?? 0))
+            return $this->sendError('User not authorized.', [], 401);
         $level = TicketLevel::where('event_id', $event_id)->get();
         return $this->sendResponse($level, 'Here are the Ticket details');
         //
@@ -93,7 +95,6 @@ class TicketLevelController extends Controller
         $tickets = Ticket::where('ticket_level_id', $id)->count();
         $validator = Validator::make($request->all(), [
             'quantity' => 'integer|min:'.$tickets,
-            'limit' => 'integer',
             'price' => 'numeric',
             'is_available' => 'boolean',
         ]);//
@@ -103,7 +104,7 @@ class TicketLevelController extends Controller
         }
         
 
-        $data = array_filter($request->all('title', 'quantity', 'limit', 'is_available', 'price'));
+        $data = $request->only('title', 'quantity', 'limit', 'is_available', 'price');
         $level = TicketLevel::with('event')->find($id);
         
         if (Gate::denies('isOwner', $level->event->user_id ?? 0))
@@ -121,7 +122,7 @@ class TicketLevelController extends Controller
      */
     public function destroy($id)
     {
-        $tickets = Ticket::where('ticket_level_id', $id)->count();
+        $tickets = Ticket::where('ticket_level_id', $id)->get();
         $level = TicketLevel::with('event')->find($id);
         if($tickets){
             $this->sendError('Can not delete, already active',[]);

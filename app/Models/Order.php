@@ -11,4 +11,8 @@ class Order extends Model
 
     protected $fillable = ['items',"summary","price","user_id"];
     protected $casts = ['items' => 'array'] ;
+
+    public function user() {
+        return $this->belongsTo(User::class);
+    }
 }

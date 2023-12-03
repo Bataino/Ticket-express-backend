@@ -60,7 +60,8 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::delete('/{id}', [VenueController::class, 'destroy']);
     });
 
-
+    
+    Route::get('/dashboard', [EventController::class, 'dashboard']);
     Route::prefix('event')->group(function () {
         Route::post('/', [EventController::class, 'create']);
         Route::post('/{id}/image', [EventController::class, 'addImage']);
@@ -83,6 +84,8 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::prefix('order')->group(function () {
         Route::post('/', [OrderController::class, 'create']);
         Route::get('/', [OrderController::class, 'index']);
+        Route::get('/summary/{event_id}', [OrderController::class, 'summary']);
+        Route::get('/event/{event_id}', [OrderController::class, 'show']);
     });
 
     Route::prefix('discount')->group(function () {

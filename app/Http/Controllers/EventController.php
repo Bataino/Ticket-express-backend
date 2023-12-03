@@ -3,7 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\Models\Event;
+use App\Models\Order;
 use App\Models\Ticket;
+use App\Models\TicketLevel;
 use App\Models\User;
 use Exception;
 use Illuminate\Http\Request;
@@ -35,7 +37,6 @@ class EventController extends Controller
         });
 
         $events = Event::where('title', 'ODS');
-        // return Event::all();
         if ($venue_id) {
             $events->where('venue_id', $venue_id);
         }
@@ -171,7 +172,7 @@ class EventController extends Controller
     public function showUser()
     {
         $user = auth()->user();
-        $events = Event::with('tickets')->with('orders')->where('user_id', $user->id)->get();
+        $events = Event::with('tickets')->with('orders')->where('user_id', $user->id)->orderBy('created_at', 'DESC')->get();
         return $this->sendResponse($events, "Got event related to the User");
     }
 
@@ -193,8 +194,51 @@ class EventController extends Controller
      */
     public function show($id)
     {
-        return $this->sendResponse(Event::find($id), "Got event by Id");
+        $ev = Event::find($id);
+        $event = Event::with('tickets')->with('orders')->with('discounts')->with('ticket_levels')->with('venue');
+        if (Gate::allows('isOwner', $ev->user_id) || Gate::allows("isSuperAdmin")){
+        }
+        $event = $event->where('id',$id)->first();
+        return $this->sendResponse($event, "Got event by Id");
     }
+
+    public function dashboard()
+    {
+        $orders = [];
+        $user = auth()->user();
+        $events =  Event::where('user_id', $user->id)->get('id');
+        $total_orders  = []; //Total Orders for each Event
+        $data  = [];
+        $ticket_level = []; //Ticket Level Bought
+        
+        foreach($events as $val) {
+            $order = Order::where('event_id', $val->id);
+            $ticket_levels = TicketLevel::where('event_id', $val->id)->get();
+            
+            
+            $sum = $order->sum('price');
+            // $get = $order->get('items');
+
+            foreach($ticket_levels as $level){
+                $ticket = Ticket::where('ticket_level_id', $level->id)->count();
+                $ticket_level[$level->title] = $ticket;
+            }
+
+
+            $total_orders[] = [
+                Event::find($val->id)->title =>  $sum
+            ];
+            // $data[Event::find($val->id)->title] = $order;
+        }
+        $data = [
+            'orders' => $total_orders,
+            'tickets' => $ticket_level
+        ];
+        // $order = Order::whereIn('event_id', $events)->orderBy('created_at','desc')->sum('p');
+        return $this->sendResponse($data, "Got event by Id");
+    }
+
+    
 
     /**
      * Show the form for editing the specified resource.
