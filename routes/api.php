@@ -41,6 +41,8 @@ Route::get('event', [EventController::class, 'index']);
 Route::get('discount/event/{event_id}', [DiscountController::class, 'get']);
 Route::get('level/{event_id}', [TicketLevelController::class, 'show']);
 
+Route::post('order', [OrderController::class, 'create']);
+
 Route::middleware('auth:sanctum')->group(function () {
     Route::post('update-password', [UserController::class, 'changePassword']);
 
@@ -76,13 +78,12 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::prefix('ticket')->group(function () {
         // Route::post('/', [TicketController::class, 'create']);
         // Route::get('/', [TicketController::class, 'index']);
-        Route::get('', [TicketController::class, 'show']);
-        Route::get('/{event_id}', [TicketController::class, 'showEvent']);
+        Route::get('', [TicketController::class, 'index']);
+        Route::get('/event/{event_id}', [TicketController::class, 'showEvent']);
         Route::get('/{id}', [TicketController::class, 'show']);
     });
 
     Route::prefix('order')->group(function () {
-        Route::post('/', [OrderController::class, 'create']);
         Route::get('/', [OrderController::class, 'index']);
         Route::get('/summary/{event_id}', [OrderController::class, 'summary']);
         Route::get('/event/{event_id}', [OrderController::class, 'show']);

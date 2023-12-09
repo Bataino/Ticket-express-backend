@@ -18,7 +18,7 @@ class VenueController extends Controller
     public function index()
     {
         $venue = Venue::all();
-        return $this->sendResponse($venue, "Venue has been created"); //
+        return $this->sendResponse($venue, "Here are All Venues"); //
     }
 
 

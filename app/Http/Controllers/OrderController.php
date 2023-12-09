@@ -43,7 +43,7 @@ class OrderController extends Controller
     {
         $validator = Validator::make($request->all(), [
             'items' => 'required',
-            'event_id' =>  'integer|required'
+            'event_id' =>  'integer|required|exists:events,id'
         ]);
 
         if (!auth()->user())
@@ -61,13 +61,14 @@ class OrderController extends Controller
         $items = $request->items;
         $tickets = [];
         $event = Event::find($request->event_id);
-        $user = auth()->user() ?? User::create($request->all('email', 'phone', 'first_name', 'last_name'));
+        // $user = auth()->user() ?? User::where('email', $request->email)->first() ?? User::create($request->all('email', 'phone', 'first_name', 'last_name'));
+        $user = User::where('email', $request->email)->first() ?? User::create($request->all('email', 'phone', 'first_name', 'last_name'));
         $discount = Discount::where('event_id', $request->event_id)->where('status', 'active')->first();
 
         $totalPrice = 0;
         $prices = [];
         $summary = 'Tickets for' . $event->name . ' : ';
-        $items = $items[0];
+        // $items = $items[0];
         // dd($items);
         foreach ($items as $tl => $qty) {
             try {
@@ -97,7 +98,8 @@ class OrderController extends Controller
                 'items' => $items,
                 "summary" => $summary,
                 "price" => $totalPrice,
-                "user_id" => $user->id
+                "user_id" => $user->id,
+                'event_id' => $event->id
             ]);
             makeOrderPayment($order);
             event(new OrderCompleted($user, $order, $prices));
@@ -139,7 +141,7 @@ class OrderController extends Controller
         if (Gate::denies('isOwner', $event->user_id ?? 0))
             return $this->sendError('User not authorized.', [], 401);
 
-        $order = Order::with('user')->where('event_id', $event_id);
+        $order = Order::with('user')->with('event')->where('event_id', $event_id);
         if ($request->sortBy) {
             $order = $order->orderBy($request->sortBy, $request->sortOrder);
         } else

@@ -2,7 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Event;
 use App\Models\Ticket;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Validator;
@@ -16,7 +18,7 @@ class TicketController extends Controller
      */
     public function index(Request $request)
     {
-        $tickets = Ticket::orderBy("created_at", "desc")->paginate(10);
+        // $tickets = Ticket::orderBy("created_at", "desc")->paginate(10);
         //
     }
 
@@ -42,14 +44,57 @@ class TicketController extends Controller
             'ticket_level_id' => 'required',
         ]);
 
-        if($validator->fails()){
-            return $this->sendError('Validation Error.', $validator->errors());       
+        if ($validator->fails()) {
+            return $this->sendError('Validation Error.', $validator->errors());
         }
 
         // $ticket = Ticket::create($request->all('ticket_level_id', 'event_id', 'user_id', 'bought', 'order_id','qr_code','status'));
         //
     }
 
+    // public function showEvent(Request $request, $event_id)
+    // {
+    //     $validator = Validator::make($request->all(), [
+    //         'sortBy' => '',
+    //         'sortOrder' =>  'string',
+    //         'filter' => '',
+    //     ]);
+
+    //     if ($validator->fails()) {
+    //         return $this->sendError('Validation Error.', $validator->errors());
+    //     } //
+    //     $event = Event::find($event_id);
+    //     if (Gate::denies('isOwner', $event->user_id ?? 0))
+    //         return $this->sendError('User not authorized.', [], 401);
+
+    //     $tickets = Ticket::with('ticket_level')->with(['user' => function(Builder $query) use ($request){
+    //         if($request->filter){
+    //             $query->where('first_name', $request->filter)->orWhere('last_name', $request->filter);
+    //         }
+    //     }])->where('event_id', $event_id);
+
+    //     if ($request->sortBy) {
+    //         $tickets = $tickets->orderBy($request->sortBy, $request->sortOrder);
+    //     } else
+    //         $tickets = $tickets->orderBy('created_at', 'desc');
+
+    //     if ($request->filter) {
+    //         $tickets = $tickets->where('summary', 'like', '%' . $request->filter . '%');
+    //     }
+
+    //     $tickets = $tickets->paginate($request->paginate ?? 25);
+    //     return $this->sendResponse($tickets, 'Here are the Recent Order');
+    // }
+
+    public function showEvent(Request $request, $event_id)
+    {
+        $event = Event::find($event_id);
+        if (Gate::denies('isOwner', $event->user_id ?? 0) && Gate::denies('isSuperAdmin', $event->user_id ?? 0)) {
+            return $this->sendError('User not authorized.', [], 401);
+        }
+        $tickets = Ticket::with('ticket_level')->with('user')->where('event_id', $event->id)->get();
+        return $this->sendResponse($tickets, 'Here are the User Tickets');
+    }
     /**
      * Display the specified resource.
      *
@@ -59,13 +104,12 @@ class TicketController extends Controller
     public function show($id)
     {
         $ticket = Ticket::with('event')->findOrFail($id);
-        if($ticket)
+        if ($ticket)
             return $this->sendError('Ticket not found', [], 401);
 
-        if(Gate::allows('isOwner', $ticket->event->user_id ?? 0))
+        if (Gate::allows('isOwner', $ticket->event->user_id ?? 0))
             return $this->sendError('User not authorized.', [], 401);
         return $this->sendError('', [], 200);
-        
     }
 
     /**

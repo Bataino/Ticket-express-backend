@@ -7,9 +7,10 @@ use App\Models\Order;
 use App\Models\Ticket;
 use App\Models\TicketLevel;
 use App\Models\User;
+use Carbon\Carbon;
 use Exception;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Gate;
+use Gate;
 use Validator;
 
 class EventController extends Controller
@@ -111,8 +112,14 @@ class EventController extends Controller
             return $this->sendError('Validation Error.', $validator->errors());
         }
 
-        $data = array_filter($request->all(['title', 'start', 'end', 'description', 'venue_id', 'time_zone']));
+        $data = $request->only(['title', 'start', 'end', 'description', 'is_publish', 'venue_id', 'time_zone']);
         $event = Event::find($id);
+
+        // return $this->sendResponse([$event, $request->is_publish], "Event updated Successfully");
+        // if ($request->is_publish == true) 
+        //     $data["is_publish"] =  1;
+        // else if($request->is_publish == false)
+        //     $data["is_publish"] =  0;
 
         if ($request->file('files'))
             $data['files'] = uploadImages($request, "files", "events-" . $event->user_id);
@@ -124,7 +131,8 @@ class EventController extends Controller
             return $this->sendError('User not authorized.', [], 401);
 
         $event->update($data);
-        return $this->sendResponse([$event], "Event updated Successfully");
+        // this.update()
+        return $this->sendResponse($event, "Event updated Successfully");
     }
 
     public function addImage(Request $request, $id)
@@ -172,6 +180,10 @@ class EventController extends Controller
     public function showUser()
     {
         $user = auth()->user();
+        $event = Event::with('venue')->with('ticket_levels')->where('user_id', $user->id)->get();
+        if (Gate::denies('isOwner', @$event[0]->user_id ?? 0) && Gate::denies("isSuperAdmin")) {
+            return $this->sendResponse($event, "Got event by Id");
+        }
         $events = Event::with('tickets')->with('orders')->where('user_id', $user->id)->orderBy('created_at', 'DESC')->get();
         return $this->sendResponse($events, "Got event related to the User");
     }
@@ -194,32 +206,33 @@ class EventController extends Controller
      */
     public function show($id)
     {
-        $ev = Event::find($id);
-        $event = Event::with('tickets')->with('orders')->with('discounts')->with('ticket_levels')->with('venue');
-        if (Gate::allows('isOwner', $ev->user_id) || Gate::allows("isSuperAdmin")){
+        $event = Event::with('venue')->with('ticket_levels')->where('id',$id)->first();
+        if (Gate::denies('isOwner', $event->user_id) && Gate::denies("isSuperAdmin")) {
+            return $this->sendResponse($event, "Got event by Id");
         }
-        $event = $event->where('id',$id)->first();
-        return $this->sendResponse($event, "Got event by Id");
+            // $ev = Event::with('tickets')->with('orders')->with('discounts')->with('ticket_levels')->with('venue');
+            // $event = $ev->where('id', $id)->first();
+            return $this->sendResponse($event, "Got event by Id , Access granted");
     }
 
     public function dashboard()
     {
         $orders = [];
         $user = auth()->user();
-        $events =  Event::where('user_id', $user->id)->get('id');
+        $events =  Event::where('user_id', $user->id)->where('end', '<=', Carbon::today())->orderBy('created_at', 'DESC')->get();
         $total_orders  = []; //Total Orders for each Event
         $data  = [];
         $ticket_level = []; //Ticket Level Bought
-        
-        foreach($events as $val) {
+
+        foreach ($events as $val) {
             $order = Order::where('event_id', $val->id);
             $ticket_levels = TicketLevel::where('event_id', $val->id)->get();
-            
-            
+
+
             $sum = $order->sum('price');
             // $get = $order->get('items');
 
-            foreach($ticket_levels as $level){
+            foreach ($ticket_levels as $level) {
                 $ticket = Ticket::where('ticket_level_id', $level->id)->count();
                 $ticket_level[$level->title] = $ticket;
             }
@@ -238,7 +251,7 @@ class EventController extends Controller
         return $this->sendResponse($data, "Got event by Id");
     }
 
-    
+
 
     /**
      * Show the form for editing the specified resource.
@@ -276,8 +289,11 @@ class EventController extends Controller
         //     $ticket->delete();
         // }
 
-        $ticket_levels = Ticket::where('event_id', $id)->get();
+        $ticket_levels = TicketLevel::where('event_id', $id)->get();
         foreach ($ticket_levels as $tl) {
+            $ticket = Ticket::where('event_id', $tl->id)->get();
+            if ($ticket)
+                return $this->sendError($event, "Event could not be deleted", 400);
             $tl->delete();
         }
         $event->delete();

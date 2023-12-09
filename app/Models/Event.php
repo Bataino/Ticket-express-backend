@@ -21,7 +21,8 @@ class Event extends Model
         'venue_id',
         'files',
         'user_id',
-        'time_zone'
+        'time_zone',
+        'is_publish'
     ];
 
     protected $casts = [

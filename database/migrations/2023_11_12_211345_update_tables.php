@@ -13,8 +13,11 @@ return new class extends Migration
      */
     public function up()
     {
+        Schema::table("events", function (Blueprint $table) {
+            $table->boolean("is_publish")->default(false);
+        });
+
         Schema::table("discounts", function (Blueprint $table) {
-            // $table->dropColumn("status");
             $table->boolean("status")->default(false);
         });
         
@@ -50,9 +53,12 @@ return new class extends Migration
      */
     public function down()
     {
+        Schema::table("events", function (Blueprint $table) {
+            $table->dropColumn("is_publish");
+        });
+
         Schema::table("discounts", function (Blueprint $table) {
             $table->dropColumn("status");
-            // $table->boolean("status")->default(false);
         });
         Schema::table('orders', function (Blueprint $table) {
             $table->dropConstrainedForeignId('event_id');

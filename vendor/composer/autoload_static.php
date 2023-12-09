@@ -563,6 +563,9 @@ class ComposerStaticInit33789fbdf3df9ce76bf0830b0bb2beed
 
     public static $classMap = array (
         'App\\Console\\Kernel' => __DIR__ . '/../..' . '/app/Console/Kernel.php',
+        'App\\Events\\OrderCompleted' => __DIR__ . '/../..' . '/app/Events/OrderCompleted.php',
+        'App\\Events\\PasswordChange' => __DIR__ . '/../..' . '/app/Events/PasswordChange.php',
+        'App\\Events\\PasswordReset' => __DIR__ . '/../..' . '/app/Events/PasswordReset.php',
         'App\\Exceptions\\Handler' => __DIR__ . '/../..' . '/app/Exceptions/Handler.php',
         'App\\Http\\Controllers\\Auth\\AuthenticatedSessionController' => __DIR__ . '/../..' . '/app/Http/Controllers/Auth/AuthenticatedSessionController.php',
         'App\\Http\\Controllers\\Auth\\ConfirmablePasswordController' => __DIR__ . '/../..' . '/app/Http/Controllers/Auth/ConfirmablePasswordController.php',
@@ -597,6 +600,12 @@ class ComposerStaticInit33789fbdf3df9ce76bf0830b0bb2beed
         'App\\Http\\Middleware\\VerifyCsrfToken' => __DIR__ . '/../..' . '/app/Http/Middleware/VerifyCsrfToken.php',
         'App\\Http\\Requests\\Auth\\LoginRequest' => __DIR__ . '/../..' . '/app/Http/Requests/Auth/LoginRequest.php',
         'App\\Http\\Requests\\ProfileUpdateRequest' => __DIR__ . '/../..' . '/app/Http/Requests/ProfileUpdateRequest.php',
+        'App\\Listeners\\SendChangePasswordNotification' => __DIR__ . '/../..' . '/app/Listeners/SendChangePasswordNotification.php',
+        'App\\Listeners\\SendForgotPasswordNotification' => __DIR__ . '/../..' . '/app/Listeners/SendForgotPasswordNotification.php',
+        'App\\Listeners\\SendOrderCompletedNotification' => __DIR__ . '/../..' . '/app/Listeners/SendOrderCompletedNotification.php',
+        'App\\Mail\\OrderCompleted' => __DIR__ . '/../..' . '/app/Mail/OrderCompleted.php',
+        'App\\Mail\\PasswordChange' => __DIR__ . '/../..' . '/app/Mail/PasswordChange.php',
+        'App\\Mail\\PasswordReset' => __DIR__ . '/../..' . '/app/Mail/PasswordReset.php',
         'App\\Models\\Campaign' => __DIR__ . '/../..' . '/app/Models/Campaign.php',
         'App\\Models\\Discount' => __DIR__ . '/../..' . '/app/Models/Discount.php',
         'App\\Models\\Event' => __DIR__ . '/../..' . '/app/Models/Event.php',

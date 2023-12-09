@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Event;
 use App\Models\Ticket;
 use App\Models\TicketLevel;
 use Illuminate\Http\Request;
@@ -65,10 +66,10 @@ class TicketLevelController extends Controller
      */
     public function show($event_id)
     {
-        if (Gate::denies('isOwner', $level->event->user_id ?? 0))
-            return $this->sendError('User not authorized.', [], 401);
         $level = TicketLevel::where('event_id', $event_id)->get();
-        return $this->sendResponse($level, 'Here are the Ticket details');
+        // if (Gate::denies('isOwner', Event::find($event_id)->user_id ?? 0))
+        //     return $this->sendError('User not authorized.', [], 401);
+        return $this->sendResponse($level, 'Here are the Ticket Level details');
         //
     }
 

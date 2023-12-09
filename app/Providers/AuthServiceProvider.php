@@ -46,6 +46,7 @@ class AuthServiceProvider extends ServiceProvider
 
         /* define owner role */
         Gate::define('isOwner', function (User $user, $id) {
+            // dd($id);
             return $user->id == $id;
         });
         //

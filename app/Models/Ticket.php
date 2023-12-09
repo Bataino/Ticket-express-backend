@@ -17,4 +17,11 @@ class Ticket extends Model
         return $this->belongsTo(Event::class, 'event_id');
     }
 
+    public function ticket_level(){
+        return $this->belongsTo(TicketLevel::class);
+    }
+
+    public function user(){
+        return $this->belongsTo(User::class);
+    }
 }
