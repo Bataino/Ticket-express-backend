@@ -34,7 +34,7 @@ Route::get('user/{id}', [UserController::class, 'show']);
 Route::post('forgot-password', [UserController::class, 'forgotPassword']);
 Route::post('reset-password', [UserController::class, 'resetPassword']);
 
-Route::get('venue', [VenueController::class, 'index']);
+Route::get('venue/all', [VenueController::class, 'index']);
 
 Route::get('event', [EventController::class, 'index']);
 
@@ -55,9 +55,9 @@ Route::middleware('auth:sanctum')->group(function () {
 
 
     Route::prefix('venue')->group(function () {
-        Route::post('/', [VenueController::class, 'create']);
+        Route::post('/', [VenueController::class, 'store']);
         Route::put('/{id}', [VenueController::class, 'update']);
-        Route::get('/user', [VenueController::class, 'showUser']);
+        Route::get('', [VenueController::class, 'showUser']);
         Route::get('/{id}', [VenueController::class, 'show']);
         Route::delete('/{id}', [VenueController::class, 'destroy']);
     });
@@ -81,6 +81,7 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::get('', [TicketController::class, 'index']);
         Route::get('/event/{event_id}', [TicketController::class, 'showEvent']);
         Route::get('/{id}', [TicketController::class, 'show']);
+        Route::post('/scan/{id}', [TicketController::class, 'scan']);
     });
 
     Route::prefix('order')->group(function () {

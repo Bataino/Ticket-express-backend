@@ -29,7 +29,7 @@ class VenueController extends Controller
      */
     public function showUser(Request $request)
     {
-        $venue = Venue::where('user_id', auth()->user()->id)->get();
+        $venue = Venue::where('user_id', auth()->user()->id)->orderBy('created_at', 'DESC')->get();
         return $this->sendResponse($venue, "All Venue"); //
     }
 
@@ -57,14 +57,14 @@ class VenueController extends Controller
             'country' => 'required|string',
             'state' => 'required|string',
             'address' => 'string|required',
-            'setting' => 'json',
+            'venue_setting' => 'json',
         ]);
 
         if ($validator->fails()) {
             return $this->sendError('Validation Error.', $validator->errors());
         }
 
-        $data = $request->all('address', 'country', 'state', 'title', 'setting', 'lat', 'long', 'zip_code');
+        $data = $request->only('address', 'country', 'state', 'title', 'venue_setting', 'lat', 'long', 'zip_code');
         $data['user_id'] = auth()->user()->id;
         $venue = Venue::create($data);
 
@@ -105,7 +105,7 @@ class VenueController extends Controller
     public function update(Request $request, $id)
     {
 
-        $data = array_filter($request->all('address', 'country', 'state', 'title', 'setting', 'lat', 'long', 'zip_code'));
+        $data = array_filter($request->all('address', 'country', 'state', 'title', 'venue_setting', 'lat', 'long', 'zip_code'));
         $venue = Venue::find($id);
         if (Gate::denies('isOwner', $venue->user_id))
             return $this->sendError('User not authorized.', [], 401);

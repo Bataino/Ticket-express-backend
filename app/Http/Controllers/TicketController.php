@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Event;
 use App\Models\Ticket;
+use Exception;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Gate;
@@ -110,6 +111,24 @@ class TicketController extends Controller
         if (Gate::allows('isOwner', $ticket->event->user_id ?? 0))
             return $this->sendError('User not authorized.', [], 401);
         return $this->sendError('', [], 200);
+    }
+
+    public function scan($id)
+    {
+        try {
+            $ticket = Ticket::with('event')->findOrFail($id);
+
+            if (!Gate::allows('isOwner', $ticket->event->user_id ?? 0) || Gate::allows("isSuperAdmin"))
+                    return $this->sendError('Ticket not found', [], 401);
+
+            if(!$ticket->is_scanned){
+                return $this->sendResponse('Ticket is Okay and scanned', [], 200);
+
+            }
+            return $this->sendError('Ticket has been scanned.', [], 404);
+        } catch (Exception $e) {
+            return $this->sendError('Ticket not Found Error', [], 404);
+        }
     }
 
     /**

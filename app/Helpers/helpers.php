@@ -32,7 +32,7 @@ function uploadImages(Request $request, $input, $folder)
 function  generateQrCode($id)
 {
     try {
-        QrCode::format('png')->size(300)->generate($id, '../public/public/images/tickets/ticket_' . $id . '.png');
+        QrCode::backgroundColor(255, 255, 255)->margin(10)->format('png')->size(1000)->generate($id, '../public/public/images/tickets/ticket_' . $id . '.png');
     } catch (Exception $e) {
         return $e;
     }

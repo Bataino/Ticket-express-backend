@@ -54,7 +54,7 @@ class User extends Authenticatable
 
             if(!$user->password){
                 // sendNewUserMail($user);
-                $user->password = bcrypt(rand(3404040404));
+                $user->password = bcrypt(rand(3404040404, 99999999999));
             }
             // ...
         });
