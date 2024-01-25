@@ -20,6 +20,7 @@ class Event extends Model
         'description',
         'venue_id',
         'files',
+        'attendees',
         'user_id',
         'time_zone',
         'is_publish'

@@ -93,7 +93,7 @@ class TicketController extends Controller
         if (Gate::denies('isOwner', $event->user_id ?? 0) && Gate::denies('isSuperAdmin', $event->user_id ?? 0)) {
             return $this->sendError('User not authorized.', [], 401);
         }
-        $tickets = Ticket::with('ticket_level')->with('user')->where('event_id', $event->id)->get();
+        $tickets = Ticket::with('ticket_level')->with('user')->where('event_id', $event->id)->orderBy('created_at', 'DESC')->get();
         return $this->sendResponse($tickets, 'Here are the User Tickets');
     }
     /**
@@ -113,19 +113,35 @@ class TicketController extends Controller
         return $this->sendError('', [], 200);
     }
 
-    public function scan($id)
+    public function scan(Request $request, $id)
     {
+        $validator = Validator::make($request->all(), [
+            'event_id' => 'required',
+        ]);
+
+        if ($validator->fails()) {
+            return $this->sendError('Validation Error.', $validator->errors());
+        }
+
         try {
-            $ticket = Ticket::with('event')->findOrFail($id);
+            $ticket = Ticket::with('event')->with('user')->with('ticket_level')->findOrFail($id);
 
-            if (!Gate::allows('isOwner', $ticket->event->user_id ?? 0) || Gate::allows("isSuperAdmin"))
-                    return $this->sendError('Ticket not found', [], 401);
+            if ($ticket->event_id != $request->event_id) {
+                return $this->sendError('Ticket not found', [], 401);
+            }
 
-            if(!$ticket->is_scanned){
-                return $this->sendResponse('Ticket is Okay and scanned', [], 200);
+            if (!Gate::allows('isOwner', $ticket->event->user_id ?? 0) || Gate::allows("isSuperAdmin") || $request->event_id != $ticket->event->id)
+                return $this->sendError('Ticket not found', [], 401);
+
+            if (!$ticket->is_scanned) {
+                $ticket->scanned_at = date("d-m-y h:i:s");
+                $ticket->is_scanned = 1;
+                $ticket->save();
+                return $this->sendResponse($ticket, 'Ticket is Okay and scanned');
 
             }
-            return $this->sendError('Ticket has been scanned.', [], 404);
+            return $this->sendError('Ticket has been scanned.', $ticket, 404);
+            
         } catch (Exception $e) {
             return $this->sendError('Ticket not Found Error', [], 404);
         }

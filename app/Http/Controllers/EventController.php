@@ -72,11 +72,12 @@ class EventController extends Controller
         $validator = Validator::make($request->all(), [
             'title' => 'string|required',
             'start' => 'required|date',
-            'end' => 'required|date|after_or_equal:start',
+            // 'end' => 'required|date|after_or_equal:start',
             'description' => 'string|required',
-            'venue_id' => 'integer|required',
+            // 'venue_id' => 'integer|required',
             'files' => 'required',
-            'files.*' => 'image|mimes:jpeg,png,jpg,gif,svg,mp4,3gp|max:2048',
+            'attendees' => 'required',
+            'files.*' => 'image|mimes:jpeg,png,jpg,gif,svg,|max:2048',
             'time_zone' => 'required'
         ]);
 
@@ -87,7 +88,7 @@ class EventController extends Controller
 
         $data = $request->all();
         $data['start'] = date('Y-m-d H:i:s', strtotime($data['start']));
-        $data['end'] = date('Y-m-d H:i:s', strtotime($data['end']));
+        $data['end'] = date('Y-m-d H:i:s', strtotime($data['start']));
 
         $user =  auth()->user();
         $data['user_id'] = $user->id;
@@ -103,7 +104,6 @@ class EventController extends Controller
     {
         $validator = Validator::make($request->all(), [
             'start' => 'date',
-            'end' => 'date|after_or_equal:start',
             'venue_id' => 'integer',
             'files.*' => 'image|mimes:jpeg,png,jpg,gif,svg,mp4,3gp|max:2048',
         ]);
